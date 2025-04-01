@@ -1,0 +1,10 @@
+C:\Users\luiz.esferreira6\source\repos\Ecco\Ecco_Casa_de_Fogoes\bin\Debug\Ecco_Casa_de_Fogoes.exe.config
+C:\Users\luiz.esferreira6\source\repos\Ecco\Ecco_Casa_de_Fogoes\bin\Debug\Ecco_Casa_de_Fogoes.exe
+C:\Users\luiz.esferreira6\source\repos\Ecco\Ecco_Casa_de_Fogoes\bin\Debug\Ecco_Casa_de_Fogoes.pdb
+C:\Users\luiz.esferreira6\source\repos\Ecco\Ecco_Casa_de_Fogoes\obj\Debug\Ecco_Casa_de_Fogoes.csproj.AssemblyReference.cache
+C:\Users\luiz.esferreira6\source\repos\Ecco\Ecco_Casa_de_Fogoes\obj\Debug\Ecco_Casa_de_Fogoes.frmEcco.resources
+C:\Users\luiz.esferreira6\source\repos\Ecco\Ecco_Casa_de_Fogoes\obj\Debug\Ecco_Casa_de_Fogoes.Properties.Resources.resources
+C:\Users\luiz.esferreira6\source\repos\Ecco\Ecco_Casa_de_Fogoes\obj\Debug\Ecco_Casa_de_Fogoes.csproj.GenerateResource.cache
+C:\Users\luiz.esferreira6\source\repos\Ecco\Ecco_Casa_de_Fogoes\obj\Debug\Ecco_Casa_de_Fogoes.csproj.CoreCompileInputs.cache
+C:\Users\luiz.esferreira6\source\repos\Ecco\Ecco_Casa_de_Fogoes\obj\Debug\Ecco_Casa_de_Fogoes.exe
+C:\Users\luiz.esferreira6\source\repos\Ecco\Ecco_Casa_de_Fogoes\obj\Debug\Ecco_Casa_de_Fogoes.pdb
