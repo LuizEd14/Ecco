@@ -16,7 +16,7 @@ namespace Ecco_Casa_de_Fogoes
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new frmEcco());
+            Application.Run(new frmCadastrarH());
         }
     }
 }

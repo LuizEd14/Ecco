@@ -63,6 +63,26 @@ namespace Ecco_Casa_de_Fogoes.Properties {
         /// <summary>
         ///   Consulta um recurso localizado do tipo System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap achar {
+            get {
+                object obj = ResourceManager.GetObject("achar", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta um recurso localizado do tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Cadastrar {
+            get {
+                object obj = ResourceManager.GetObject("Cadastrar", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta um recurso localizado do tipo System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap carte {
             get {
                 object obj = ResourceManager.GetObject("carte", resourceCulture);
@@ -73,9 +93,9 @@ namespace Ecco_Casa_de_Fogoes.Properties {
         /// <summary>
         ///   Consulta um recurso localizado do tipo System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap edit_document_24dp_1723A6_FILL0_wght400_GRAD0_opsz24 {
+        internal static System.Drawing.Bitmap estoque {
             get {
-                object obj = ResourceManager.GetObject("edit_document_24dp_1723A6_FILL0_wght400_GRAD0_opsz24", resourceCulture);
+                object obj = ResourceManager.GetObject("estoque", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -83,9 +103,19 @@ namespace Ecco_Casa_de_Fogoes.Properties {
         /// <summary>
         ///   Consulta um recurso localizado do tipo System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap estoque {
+        internal static System.Drawing.Bitmap estoque1 {
             get {
-                object obj = ResourceManager.GetObject("estoque", resourceCulture);
+                object obj = ResourceManager.GetObject("estoque1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta um recurso localizado do tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Logo {
+            get {
+                object obj = ResourceManager.GetObject("Logo", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -106,6 +136,16 @@ namespace Ecco_Casa_de_Fogoes.Properties {
         internal static System.Drawing.Bitmap xis {
             get {
                 object obj = ResourceManager.GetObject("xis", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta um recurso localizado do tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap xis1 {
+            get {
+                object obj = ResourceManager.GetObject("xis1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
