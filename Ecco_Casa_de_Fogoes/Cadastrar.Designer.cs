@@ -126,6 +126,7 @@ namespace Ecco_Casa_de_Fogoes
             this.btnCaixa.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.btnCaixa.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btnCaixa.UseVisualStyleBackColor = true;
+            this.btnCaixa.Click += new System.EventHandler(this.Caixa);
             this.btnCaixa.MouseEnter += new System.EventHandler(this.Entrou);
             this.btnCaixa.MouseLeave += new System.EventHandler(this.Saiu);
             // 

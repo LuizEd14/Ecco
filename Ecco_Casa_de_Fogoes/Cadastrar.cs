@@ -15,6 +15,7 @@ namespace Ecco_Casa_de_Fogoes
 {
     public partial class frmCadastrarH : Form
     {
+        //Conexão inicial para o Bancos de Dados
         MySqlConnection Conexao;
         string data_source = "datasource=localhost; username=root; password=; database=ecco";
 
@@ -30,10 +31,32 @@ namespace Ecco_Casa_de_Fogoes
             ArredondarBotao(btnSalvar, 45);
         }
 
+        public frmCadastrarH(int id, string produto, string tipo, int quantidade, float valor)
+        {
+            InitializeComponent();
+            ArredondarBotao(btnSalvar, 45);
+
+            // Preenche os campos com os dados recebidos
+            txtID.Text = id.ToString();
+            txtProduto.Text = produto;
+            txtTipo.Text = tipo;
+            txtQuantidade.Text = quantidade.ToString();
+            txtValor.Text = valor.ToString("F2", new CultureInfo("pt-BR"));
+
+            txtID.Enabled = false; // Evita mudar o ID ao editar
+        }
+
         private void Estoque(object sender, EventArgs e)
         {
             frmEstoque estoque = new frmEstoque();
             estoque.Show();
+            this.Hide();
+        }
+
+        public void Caixa(object sender, EventArgs e)
+        {
+            frmCaixa caixa = new frmCaixa();
+            caixa.Show();
             this.Hide();
         }
 
@@ -119,7 +142,7 @@ namespace Ecco_Casa_de_Fogoes
                 Conexao = new MySqlConnection(data_source);
                 Conexao.Open();
 
-                //Comando SQL para inserir um Cliente no banco de dados
+                //Comando SQL para inserir um Produto no banco de dados
                 MySqlCommand cmd = new MySqlCommand
                 {
                     Connection = Conexao
@@ -127,7 +150,14 @@ namespace Ecco_Casa_de_Fogoes
 
                 cmd.Prepare();
 
-                cmd.CommandText = "INSERT INTO produto(idproduto, produto, tipo, quant, valorunidade) " + ("VALUES (@id, @produto, @tipo, @quant, @valorunidade)");
+                cmd.CommandText = @"INSERT INTO produto (idproduto, produto, tipo, quant, valorunidade) 
+                VALUES (@id, @produto, @tipo, @quant, @valorunidade)
+                ON DUPLICATE KEY UPDATE 
+                produto = VALUES(produto), 
+                tipo = VALUES(tipo), 
+                quant = VALUES(quant), 
+                valorunidade = VALUES(valorunidade),
+                data_alteracao = NOW()";
 
                 //Adicionar parametros com o dados do formulário
                 cmd.Parameters.AddWithValue("@id", id);

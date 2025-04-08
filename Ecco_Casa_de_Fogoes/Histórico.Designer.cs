@@ -42,14 +42,14 @@ namespace Ecco_Casa_de_Fogoes
             this.btnPesquisar = new System.Windows.Forms.Button();
             this.panel5 = new System.Windows.Forms.Panel();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.panel2 = new System.Windows.Forms.Panel();
-            this.panel3 = new System.Windows.Forms.Panel();
-            this.lblTítulo = new System.Windows.Forms.Label();
             this.Data = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ID = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Produto = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Quantidade = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Valor = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.panel3 = new System.Windows.Forms.Panel();
+            this.lblTítulo = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbXis)).BeginInit();
             this.panel4.SuspendLayout();
@@ -124,6 +124,7 @@ namespace Ecco_Casa_de_Fogoes
             this.btnCaixa.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.btnCaixa.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btnCaixa.UseVisualStyleBackColor = true;
+            this.btnCaixa.Click += new System.EventHandler(this.Caixa);
             this.btnCaixa.MouseEnter += new System.EventHandler(this.Entrou);
             this.btnCaixa.MouseLeave += new System.EventHandler(this.Saiu);
             // 
@@ -267,41 +268,6 @@ namespace Ecco_Casa_de_Fogoes
             this.dataGridView1.Size = new System.Drawing.Size(1200, 386);
             this.dataGridView1.TabIndex = 6;
             // 
-            // panel2
-            // 
-            this.panel2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.panel2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(136)))), ((int)(((byte)(19)))));
-            this.panel2.Controls.Add(this.panel5);
-            this.panel2.Controls.Add(this.btnPesquisar);
-            this.panel2.Location = new System.Drawing.Point(109, 179);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(1200, 141);
-            this.panel2.TabIndex = 7;
-            // 
-            // panel3
-            // 
-            this.panel3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.panel3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(193)))), ((int)(((byte)(0)))));
-            this.panel3.Controls.Add(this.lblTítulo);
-            this.panel3.Location = new System.Drawing.Point(109, 120);
-            this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(1200, 69);
-            this.panel3.TabIndex = 8;
-            // 
-            // lblTítulo
-            // 
-            this.lblTítulo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblTítulo.AutoSize = true;
-            this.lblTítulo.Font = new System.Drawing.Font("Montserrat", 20.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTítulo.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(23)))), ((int)(((byte)(35)))), ((int)(((byte)(166)))));
-            this.lblTítulo.Location = new System.Drawing.Point(549, 14);
-            this.lblTítulo.Name = "lblTítulo";
-            this.lblTítulo.Size = new System.Drawing.Size(303, 42);
-            this.lblTítulo.TabIndex = 0;
-            this.lblTítulo.Text = "Histórico de Vendas";
-            // 
             // Data
             // 
             this.Data.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
@@ -336,6 +302,41 @@ namespace Ecco_Casa_de_Fogoes
             this.Valor.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
             this.Valor.HeaderText = "Valor";
             this.Valor.Name = "Valor";
+            // 
+            // panel2
+            // 
+            this.panel2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(136)))), ((int)(((byte)(19)))));
+            this.panel2.Controls.Add(this.panel5);
+            this.panel2.Controls.Add(this.btnPesquisar);
+            this.panel2.Location = new System.Drawing.Point(109, 179);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(1200, 141);
+            this.panel2.TabIndex = 7;
+            // 
+            // panel3
+            // 
+            this.panel3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(193)))), ((int)(((byte)(0)))));
+            this.panel3.Controls.Add(this.lblTítulo);
+            this.panel3.Location = new System.Drawing.Point(109, 120);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(1200, 69);
+            this.panel3.TabIndex = 8;
+            // 
+            // lblTítulo
+            // 
+            this.lblTítulo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblTítulo.AutoSize = true;
+            this.lblTítulo.Font = new System.Drawing.Font("Montserrat", 20.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTítulo.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(23)))), ((int)(((byte)(35)))), ((int)(((byte)(166)))));
+            this.lblTítulo.Location = new System.Drawing.Point(549, 14);
+            this.lblTítulo.Name = "lblTítulo";
+            this.lblTítulo.Size = new System.Drawing.Size(303, 42);
+            this.lblTítulo.TabIndex = 0;
+            this.lblTítulo.Text = "Histórico de Vendas";
             // 
             // frmHisto
             // 
