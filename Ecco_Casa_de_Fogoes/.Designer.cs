@@ -36,7 +36,7 @@ namespace Ecco_Casa_de_Fogoes
             this.btnEstoque = new System.Windows.Forms.Button();
             this.btnCadastrarP = new System.Windows.Forms.Button();
             this.panel4 = new System.Windows.Forms.Panel();
-            this.btnCriar = new System.Windows.Forms.Button();
+            this.btnFinalizar = new System.Windows.Forms.Button();
             this.pbLogo = new System.Windows.Forms.PictureBox();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.panel2 = new System.Windows.Forms.Panel();
@@ -54,6 +54,7 @@ namespace Ecco_Casa_de_Fogoes
             this.txtDesconto = new System.Windows.Forms.TextBox();
             this.txtQuantidade = new System.Windows.Forms.TextBox();
             this.txtID = new System.Windows.Forms.TextBox();
+            this.lblTotal = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbXis)).BeginInit();
             this.panel4.SuspendLayout();
@@ -182,35 +183,37 @@ namespace Ecco_Casa_de_Fogoes
             // panel4
             // 
             this.panel4.BackColor = System.Drawing.Color.White;
-            this.panel4.Controls.Add(this.btnCriar);
+            this.panel4.Controls.Add(this.lblTotal);
+            this.panel4.Controls.Add(this.btnFinalizar);
             this.panel4.Controls.Add(this.pbLogo);
             this.panel4.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel4.Location = new System.Drawing.Point(0, 567);
+            this.panel4.Location = new System.Drawing.Point(0, 561);
             this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(1124, 95);
+            this.panel4.Size = new System.Drawing.Size(1124, 101);
             this.panel4.TabIndex = 4;
             // 
-            // btnCriar
+            // btnFinalizar
             // 
-            this.btnCriar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnCriar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(23)))), ((int)(((byte)(35)))), ((int)(((byte)(166)))));
-            this.btnCriar.FlatAppearance.BorderSize = 0;
-            this.btnCriar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnCriar.Font = new System.Drawing.Font("Montserrat", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnCriar.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(193)))), ((int)(((byte)(0)))));
-            this.btnCriar.Location = new System.Drawing.Point(832, 29);
-            this.btnCriar.Name = "btnCriar";
-            this.btnCriar.Size = new System.Drawing.Size(251, 44);
-            this.btnCriar.TabIndex = 1;
-            this.btnCriar.Text = "Finalizar Venda";
-            this.btnCriar.UseVisualStyleBackColor = false;
+            this.btnFinalizar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnFinalizar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(23)))), ((int)(((byte)(35)))), ((int)(((byte)(166)))));
+            this.btnFinalizar.FlatAppearance.BorderSize = 0;
+            this.btnFinalizar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnFinalizar.Font = new System.Drawing.Font("Montserrat", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnFinalizar.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(193)))), ((int)(((byte)(0)))));
+            this.btnFinalizar.Location = new System.Drawing.Point(831, 27);
+            this.btnFinalizar.Name = "btnFinalizar";
+            this.btnFinalizar.Size = new System.Drawing.Size(251, 44);
+            this.btnFinalizar.TabIndex = 1;
+            this.btnFinalizar.Text = "Finalizar Venda";
+            this.btnFinalizar.UseVisualStyleBackColor = false;
+            this.btnFinalizar.Click += new System.EventHandler(this.btnFinalizar_Click);
             // 
             // pbLogo
             // 
             this.pbLogo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.pbLogo.Enabled = false;
             this.pbLogo.Image = global::Ecco_Casa_de_Fogoes.Properties.Resources.Logo;
-            this.pbLogo.Location = new System.Drawing.Point(22, 11);
+            this.pbLogo.Location = new System.Drawing.Point(12, 8);
             this.pbLogo.Name = "pbLogo";
             this.pbLogo.Size = new System.Drawing.Size(100, 81);
             this.pbLogo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -231,7 +234,7 @@ namespace Ecco_Casa_de_Fogoes
             this.dataGridView1.Location = new System.Drawing.Point(0, 319);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowHeadersVisible = false;
-            this.dataGridView1.Size = new System.Drawing.Size(1124, 253);
+            this.dataGridView1.Size = new System.Drawing.Size(1124, 244);
             this.dataGridView1.TabIndex = 7;
             this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
             // 
@@ -266,6 +269,7 @@ namespace Ecco_Casa_de_Fogoes
             this.btnCancelar.TabIndex = 11;
             this.btnCancelar.Text = "Cancelar";
             this.btnCancelar.UseVisualStyleBackColor = false;
+            this.btnCancelar.Click += new System.EventHandler(this.btnCancelar_Click);
             // 
             // btnAdicionar
             // 
@@ -334,14 +338,14 @@ namespace Ecco_Casa_de_Fogoes
             // 
             // lblTroco
             // 
-            this.lblTroco.AutoSize = true;
             this.lblTroco.Font = new System.Drawing.Font("Montserrat", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblTroco.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(193)))), ((int)(((byte)(0)))));
-            this.lblTroco.Location = new System.Drawing.Point(45, 42);
+            this.lblTroco.Location = new System.Drawing.Point(0, 0);
             this.lblTroco.Name = "lblTroco";
-            this.lblTroco.Size = new System.Drawing.Size(111, 38);
+            this.lblTroco.Size = new System.Drawing.Size(200, 117);
             this.lblTroco.TabIndex = 0;
             this.lblTroco.Text = "R$ 0,00";
+            this.lblTroco.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // label3
             // 
@@ -387,6 +391,7 @@ namespace Ecco_Casa_de_Fogoes
             this.txtDinheiro.Name = "txtDinheiro";
             this.txtDinheiro.Size = new System.Drawing.Size(210, 29);
             this.txtDinheiro.TabIndex = 1;
+            this.txtDinheiro.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtDinheiro_KeyDown);
             // 
             // txtDesconto
             // 
@@ -395,6 +400,7 @@ namespace Ecco_Casa_de_Fogoes
             this.txtDesconto.Name = "txtDesconto";
             this.txtDesconto.Size = new System.Drawing.Size(210, 29);
             this.txtDesconto.TabIndex = 0;
+            this.txtDesconto.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtDesconto_KeyDown);
             // 
             // txtQuantidade
             // 
@@ -411,6 +417,19 @@ namespace Ecco_Casa_de_Fogoes
             this.txtID.Name = "txtID";
             this.txtID.Size = new System.Drawing.Size(210, 29);
             this.txtID.TabIndex = 6;
+            // 
+            // lblTotal
+            // 
+            this.lblTotal.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.lblTotal.AutoSize = true;
+            this.lblTotal.Font = new System.Drawing.Font("Montserrat", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTotal.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(23)))), ((int)(((byte)(35)))), ((int)(((byte)(166)))));
+            this.lblTotal.Location = new System.Drawing.Point(139, 30);
+            this.lblTotal.Name = "lblTotal";
+            this.lblTotal.Size = new System.Drawing.Size(186, 38);
+            this.lblTotal.TabIndex = 2;
+            this.lblTotal.Text = "Total: R$ 0,00";
             // 
             // frmCaixa
             // 
@@ -430,6 +449,7 @@ namespace Ecco_Casa_de_Fogoes
             this.panel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pbXis)).EndInit();
             this.panel4.ResumeLayout(false);
+            this.panel4.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbLogo)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.panel2.ResumeLayout(false);
@@ -437,7 +457,6 @@ namespace Ecco_Casa_de_Fogoes
             this.panel3.ResumeLayout(false);
             this.panel3.PerformLayout();
             this.panel5.ResumeLayout(false);
-            this.panel5.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -452,7 +471,7 @@ namespace Ecco_Casa_de_Fogoes
         private System.Windows.Forms.Button btnCadastrarP;
         private System.Windows.Forms.PictureBox pbLogo;
         private System.Windows.Forms.Panel panel4;
-        private System.Windows.Forms.Button btnCriar;
+        private System.Windows.Forms.Button btnFinalizar;
         private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Panel panel3;
@@ -469,5 +488,6 @@ namespace Ecco_Casa_de_Fogoes
         private System.Windows.Forms.TextBox txtID;
         private System.Windows.Forms.Button btnCancelar;
         private System.Windows.Forms.Button btnAdicionar;
+        private System.Windows.Forms.Label lblTotal;
     }
 }

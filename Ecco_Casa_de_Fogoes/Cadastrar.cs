@@ -1,36 +1,36 @@
 ﻿using MySql.Data.MySqlClient;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Ecco_Casa_de_Fogoes
 {
     public partial class frmCadastrarH : Form
     {
-        //Conexão inicial para o Bancos de Dados
+        // Objeto de conexão com o banco de dados
         MySqlConnection Conexao;
+
+        // String de conexão com o banco MySQL
         string data_source = "datasource=localhost; username=root; password=; database=ecco";
 
+        // Variáveis para armazenar dados do produto
         int id;
         string produto;
         string tipo;
         int quantidade;
         float valor;
 
+        // Construtor padrão
         public frmCadastrarH()
         {
             InitializeComponent();
-            ArredondarBotao(btnSalvar, 45);
+            ArredondarBotao(btnSalvar, 45); // Arredonda o botão "Salvar"
         }
 
+        // Construtor usado para edição de produto, preenchendo os campos
         public frmCadastrarH(int id, string produto, string tipo, int quantidade, float valor)
         {
             InitializeComponent();
@@ -43,9 +43,10 @@ namespace Ecco_Casa_de_Fogoes
             txtQuantidade.Text = quantidade.ToString();
             txtValor.Text = valor.ToString("F2", new CultureInfo("pt-BR"));
 
-            txtID.Enabled = false; // Evita mudar o ID ao editar
+            txtID.Enabled = false; // Impede alteração do ID
         }
 
+        // Abre o formulário de Estoque
         private void Estoque(object sender, EventArgs e)
         {
             frmEstoque estoque = new frmEstoque();
@@ -53,6 +54,7 @@ namespace Ecco_Casa_de_Fogoes
             this.Hide();
         }
 
+        // Abre o formulário do Caixa
         public void Caixa(object sender, EventArgs e)
         {
             frmCaixa caixa = new frmCaixa();
@@ -60,6 +62,7 @@ namespace Ecco_Casa_de_Fogoes
             this.Hide();
         }
 
+        // Abre o formulário de Histórico
         public void Historio(object sender, EventArgs e)
         {
             frmHisto cadastro = new frmHisto();
@@ -67,11 +70,13 @@ namespace Ecco_Casa_de_Fogoes
             this.Hide();
         }
 
+        // Fecha a aplicação ao clicar no "X"
         private void pbXis_Click(object sender, EventArgs e)
         {
             Application.Exit();
         }
 
+        // Altera cor ao passar o mouse (efeito de hover)
         private void Entrou(object sender, EventArgs e)
         {
             try
@@ -84,6 +89,7 @@ namespace Ecco_Casa_de_Fogoes
             }
         }
 
+        // Restaura cor ao tirar o mouse
         private void Saiu(object sender, EventArgs e)
         {
             try
@@ -96,6 +102,7 @@ namespace Ecco_Casa_de_Fogoes
             }
         }
 
+        // Valida se o campo está vazio e mostra mensagem de aviso
         private bool ValidarCampo(TextBox campo, string nomeCampo)
         {
             if (string.IsNullOrWhiteSpace(campo.Text))
@@ -107,71 +114,74 @@ namespace Ecco_Casa_de_Fogoes
             return true;
         }
 
+        // Evento de clique do botão "Salvar"
         private void btnSalvar_Click(object sender, EventArgs e)
         {
             try
             {
-                txtID.BackColor = System.Drawing.Color.White;
-                txtProduto.BackColor = System.Drawing.Color.White;
-                txtTipo.BackColor = System.Drawing.Color.White;
-                txtQuantidade.BackColor = System.Drawing.Color.White;
-                txtValor.BackColor = System.Drawing.Color.White;
+                // Resetando cor dos campos para branco
+                txtID.BackColor = Color.White;
+                txtProduto.BackColor = Color.White;
+                txtTipo.BackColor = Color.White;
+                txtQuantidade.BackColor = Color.White;
+                txtValor.BackColor = Color.White;
 
-                //Validação dos campos obrigatórios.
+                // Valida os campos obrigatórios
                 if (!ValidarCampo(txtID, "ID")) return;
                 if (!ValidarCampo(txtProduto, "Produto")) return;
                 if (!ValidarCampo(txtTipo, "Tipo")) return;
                 if (!ValidarCampo(txtQuantidade, "Quantidade")) return;
                 if (!ValidarCampo(txtValor, "Valor")) return;
 
-                //Validação dos campos preenchidos.
                 try
-                { 
-                id = Convert.ToInt32(txtID.Text);
-                produto = txtProduto.Text;
-                tipo = txtTipo.Text;
-                quantidade = Convert.ToInt32(txtQuantidade.Text);
-                valor = float.Parse(txtValor.Text, new CultureInfo("pt-BR"));
+                {
+                    // Converte os valores dos campos
+                    id = Convert.ToInt32(txtID.Text);
+                    produto = txtProduto.Text;
+                    tipo = txtTipo.Text;
+                    quantidade = Convert.ToInt32(txtQuantidade.Text);
+                    valor = float.Parse(txtValor.Text, new CultureInfo("pt-BR"));
                 }
                 catch
                 {
-                    MessageBox.Show("Alguns dos campos estão preenchidos errado.", "Atenção", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    MessageBox.Show("Alguns dos campos estão preenchidos de forma incorreta.", "Atenção", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    return;
                 }
 
-                //Criando uma conexão com o banco de dados
+                // Abre conexão com o banco
                 Conexao = new MySqlConnection(data_source);
                 Conexao.Open();
 
-                //Comando SQL para inserir um Produto no banco de dados
+                // Comando SQL com INSERT ou UPDATE, caso o ID já exista
                 MySqlCommand cmd = new MySqlCommand
                 {
                     Connection = Conexao
                 };
 
-                cmd.Prepare();
+                cmd.CommandText = @"
+                    INSERT INTO produto (idproduto, produto, tipo, quant, valorunidade) 
+                    VALUES (@id, @produto, @tipo, @quant, @valorunidade)
+                    ON DUPLICATE KEY UPDATE 
+                        produto = VALUES(produto), 
+                        tipo = VALUES(tipo), 
+                        quant = VALUES(quant), 
+                        valorunidade = VALUES(valorunidade),
+                        data_alteracao = NOW()";
 
-                cmd.CommandText = @"INSERT INTO produto (idproduto, produto, tipo, quant, valorunidade) 
-                VALUES (@id, @produto, @tipo, @quant, @valorunidade)
-                ON DUPLICATE KEY UPDATE 
-                produto = VALUES(produto), 
-                tipo = VALUES(tipo), 
-                quant = VALUES(quant), 
-                valorunidade = VALUES(valorunidade),
-                data_alteracao = NOW()";
-
-                //Adicionar parametros com o dados do formulário
+                // Parâmetros da query
                 cmd.Parameters.AddWithValue("@id", id);
-                cmd.Parameters.AddWithValue("@produto", txtProduto.Text.Trim());
-                cmd.Parameters.AddWithValue("@tipo", txtTipo.Text.Trim());
+                cmd.Parameters.AddWithValue("@produto", produto.Trim());
+                cmd.Parameters.AddWithValue("@tipo", tipo.Trim());
                 cmd.Parameters.AddWithValue("@quant", quantidade);
                 cmd.Parameters.AddWithValue("@valorunidade", valor);
 
-                //execulta o comando acima
-                cmd.ExecuteNonQuery();
+                cmd.Prepare(); // Prepara o comando
+                cmd.ExecuteNonQuery(); // Executa no banco
 
-                //mensagem de sucesso
+                // Mensagem de sucesso
                 MessageBox.Show("O produto foi salvo com sucesso!", "Salvo", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
+                // Volta para a tela de estoque
                 frmEstoque estoque = new frmEstoque();
                 estoque.Show();
                 this.Hide();
@@ -179,23 +189,22 @@ namespace Ecco_Casa_de_Fogoes
             catch (MySqlException er)
             {
                 MessageBox.Show("Erro: " + er.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Erro: " + ex.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
             }
             finally
             {
-                //Garantir que a conexão com o banco será fechada, mesmo se ocorrer um erro
-                if(Conexao != null && Conexao.State == ConnectionState.Open)
+                // Fecha a conexão, se estiver aberta
+                if (Conexao != null && Conexao.State == ConnectionState.Open)
                 {
                     Conexao.Close();
                 }
             }
         }
 
+        // Arredonda os cantos de um botão
         private void ArredondarBotao(Button btn, int borderRadius)
         {
             GraphicsPath path = new GraphicsPath();
@@ -208,9 +217,10 @@ namespace Ecco_Casa_de_Fogoes
             btn.Region = new Region(path);
         }
 
+        // Deixa o campo em rosa caso tenha erro
         private void Erro(Control e)
         {
-            e.BackColor = System.Drawing.Color.LightPink;
+            e.BackColor = Color.LightPink;
         }
     }
 }

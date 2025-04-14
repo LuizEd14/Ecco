@@ -1,150 +1,447 @@
-﻿using MySql.Data.MySqlClient;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using MySql.Data.MySqlClient; // Importa a biblioteca para conexão com MySQL
+using System; // Importa classes básicas do sistema
+using System.Collections.Generic; // Importa classes para coleções genéricas
+using System.ComponentModel; // Importa classes para componentes
+using System.Data; // Importa classes para manipulação de dados
+using System.Drawing; // Importa classes para manipulação de gráficos
+using System.Drawing.Drawing2D; // Importa classes para gráficos 2D
+using System.Linq; // Importa classes para LINQ
+using System.Text; // Importa classes para manipulação de texto
+using System.Threading.Tasks; // Importa classes para tarefas assíncronas
+using System.Windows.Forms; // Importa classes para formulários do Windows
 
-namespace Ecco_Casa_de_Fogoes
+namespace Ecco_Casa_de_Fogoes // Define o namespace do projeto
 {
-    public partial class frmCaixa : Form
+    public partial class frmCaixa : Form // Define a classe do formulário
     {
+        // Variáveis para controle de valores
+        private decimal totalCompra = 0; // Total da compra
+        private decimal valorComDesconto = 0; // Valor total com desconto aplicado
+        private decimal descontoAplicado = 0; // Valor do desconto aplicado
 
+        // String de conexão com o banco de dados
         string conexaoString = "server=localhost; user=root; password=; database=ecco";
 
+        // Construtor do formulário
         public frmCaixa()
         {
+            InitializeComponent(); // Inicializa os componentes do formulário
 
-            InitializeComponent();
+            // Configurações do DataGridView
+            dataGridView1.DefaultCellStyle.Font = new Font("Montserrat", 15); // Fonte das células
+            dataGridView1.ColumnHeadersDefaultCellStyle.Font = new Font("Montserrat", 22, FontStyle.Bold); // Fonte dos cabeçalhos
+            dataGridView1.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; // Alinhamento das células
+            dataGridView1.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; // Alinhamento dos cabeçalhos
+            dataGridView1.ColumnHeadersDefaultCellStyle.BackColor = ColorTranslator.FromHtml("#FAC100"); // Cor de fundo dos cabeçalhos
+            dataGridView1.ColumnHeadersDefaultCellStyle.ForeColor = ColorTranslator.FromHtml("#1723A6"); // Cor do texto dos cabeçalhos
+            dataGridView1.EnableHeadersVisualStyles = false; // Desabilita estilos visuais padrão
 
-            dataGridView1.DefaultCellStyle.Font = new Font("Montserrat", 15);
-            dataGridView1.ColumnHeadersDefaultCellStyle.Font = new Font("Montserrat", 22, FontStyle.Bold);
-            dataGridView1.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dataGridView1.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dataGridView1.ColumnHeadersDefaultCellStyle.BackColor = ColorTranslator.FromHtml("#FAC100");
-            dataGridView1.ColumnHeadersDefaultCellStyle.ForeColor = ColorTranslator.FromHtml("#1723A6");
-            dataGridView1.EnableHeadersVisualStyles = false;
+            // Arredonda os botões
+            ArredondarBotao(btnAdicionar, 45);
+            ArredondarBotao(btnCancelar, 45);
+            ArredondarBotao(btnFinalizar, 45);
         }
 
+        // Evento que ocorre ao carregar o formulário
         private void frmCaixa_Load(object sender, EventArgs e)
         {
+            // Adiciona colunas ao DataGridView
             dataGridView1.Columns.Add("nomeProduto", "Produto");
             dataGridView1.Columns.Add("quantidade", "Quantidade");
             dataGridView1.Columns.Add("valorUnitario", "Valor Unitário");
             dataGridView1.Columns.Add("valorTotal", "Valor Total");
 
-            DataGridViewButtonColumn btnRemover = new DataGridViewButtonColumn();
-            btnRemover.Name = "Remover";
-            btnRemover.HeaderText = "Ação";
-            btnRemover.Text = "Remover";
-            btnRemover.UseColumnTextForButtonValue = true;
+            // Adiciona coluna de botão para remover itens
+            DataGridViewButtonColumn btnRemover = new DataGridViewButtonColumn
+            {
+                Name = "Remover",
+                HeaderText = "Ação",
+                Text = "Remover",
+                UseColumnTextForButtonValue = true
+            };
             dataGridView1.Columns.Add(btnRemover);
+
+            dataGridView1.AllowUserToAddRows = false; // Desabilita a adição de novas linhas pelo usuário
         }
 
+        // Método para abrir o formulário de cadastro
+        public void CadastrarH(object sender, EventArgs e)
+        {
+            frmCadastrarH cadastro = new frmCadastrarH();
+            cadastro.Show(); // Exibe o formulário de cadastro
+            this.Hide(); // Esconde o formulário atual
+        }
+
+        // Método para abrir o formulário de estoque
+        private void Estoque(object sender, EventArgs e)
+        {
+            frmEstoque estoque = new frmEstoque();
+            estoque.Show(); // Exibe o formulário de estoque
+            this.Hide(); // Esconde o formulário atual
+        }
+
+        // Método para abrir o histórico
+        public void Historio(object sender, EventArgs e)
+        {
+            frmHisto cadastro = new frmHisto();
+            cadastro.Show(); // Exibe o formulário de histórico
+            this.Hide(); // Esconde o formulário atual
+        }
+
+        // Método para fechar a aplicação
+        private void pbXis_Click(object sender, EventArgs e)
+        {
+            Application.Exit(); // Encerra a aplicação
+        }
+
+        // Evento que ocorre quando um botão é pressionado
+        private void Entrou(object sender, EventArgs e)
+        {
+            try
+            {
+                // Altera a cor de fundo do botão pressionado
+                ((Button)sender).BackColor = ColorTranslator.FromHtml("#FF8813");
+            }
+            catch
+            {
+                // Altera a cor de fundo do botão de fechar em caso de erro
+                pbXis.BackColor = Color.Red;
+            }
+        }
+
+        // Evento que ocorre quando o mouse sai do botão
+        private void Saiu(object sender, EventArgs e)
+        {
+            try
+            {
+                // Restaura a cor de fundo original do botão
+                ((Button)sender).BackColor = ColorTranslator.FromHtml("#FAC100");
+            }
+            catch
+            {
+                // Restaura a cor de fundo original do botão de fechar em caso de erro
+                pbXis.BackColor = Color.Transparent;
+            }
+        }
+
+        // Método para adicionar um produto ao carrinho
         private void btnAdicionar_Click(object sender, EventArgs e)
         {
+            // Verifica se o ID do produto e a quantidade são válidos
             if (int.TryParse(txtID.Text, out int idProduto) && int.TryParse(txtQuantidade.Text, out int quantidade))
             {
                 using (MySqlConnection conn = new MySqlConnection(conexaoString))
                 {
-                    conn.Open();
-                    string query = "SELECT produto, valorunidade FROM produto WHERE idproduto = @id";
+                    conn.Open(); // Abre a conexão com o banco de dados
+                    string query = "SELECT produto, valorunidade, quant FROM produto WHERE idproduto = @id"; // Consulta para buscar o produto
                     MySqlCommand cmd = new MySqlCommand(query, conn);
-                    cmd.Parameters.AddWithValue("@id", idProduto);
+                    cmd.Parameters.AddWithValue("@id", idProduto); // Adiciona o parâmetro da consulta
 
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
+                        // Verifica se o produto foi encontrado
                         if (reader.Read())
                         {
-                            string nomeProduto = reader.GetString("produto");
-                            decimal valorUnitario = reader.GetDecimal("valorunidade");
-                            decimal valorTotal = valorUnitario * quantidade;
+                            string nomeProduto = reader.GetString("produto"); // Obtém o nome do produto
+                            decimal valorUnitario = reader.GetDecimal("valorunidade"); // Obtém o valor unitário
+                            int estoqueAtual = reader.GetInt32("quant"); // Obtém a quantidade em estoque
 
-                            dataGridView1.Rows.Add(
-                                nomeProduto,
-                                quantidade,
-                                valorUnitario.ToString("C"),
-                                valorTotal.ToString("C")
-                            );
+                            // Verifica se a quantidade solicitada é maior que a disponível
+                            if (quantidade > estoqueAtual)
+                            {
+                                MessageBox.Show("Estoque insuficiente! Quantidade disponível: " + estoqueAtual, "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            }
+                            else
+                            {
+                                decimal valorTotal = valorUnitario * quantidade; // Calcula o valor total
+
+                                // Adiciona uma nova linha ao DataGridView
+                                dataGridView1.Rows.Add(
+                                    nomeProduto,
+                                    quantidade,
+                                    valorUnitario.ToString("C"), // Formata o valor unitário como moeda
+                                    valorTotal.ToString("C") // Formata o valor total como moeda
+                                );
+
+                                AtualizarTotal(); // Atualiza o total da compra
+                            }
                         }
                         else
                         {
-                            MessageBox.Show("Produto não encontrado!");
+                            MessageBox.Show("Produto não encontrado!"); // Mensagem de erro se o produto não for encontrado
                         }
                     }
                 }
             }
             else
             {
-                MessageBox.Show("ID ou Quantidade inválida!");
+                MessageBox.Show("ID ou Quantidade inválida!"); // Mensagem de erro se os dados forem inválidos
             }
 
+            // Limpa os campos de entrada
             txtID.Clear();
             txtQuantidade.Clear();
-            txtID.Focus();
+            txtID.Focus(); // Foca no campo ID
         }
 
+        // Método para cancelar a compra
+        private void btnCancelar_Click(object sender, EventArgs e)
+        {
+            DialogResult resultado = MessageBox.Show(
+                "Deseja cancelar toda a compra?", // Pergunta de confirmação
+                "Confirmação",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question
+            );
+
+            // Se o usuário confirmar, limpa os dados
+            if (resultado == DialogResult.Yes)
+            {
+                dataGridView1.Rows.Clear(); // Limpa as linhas do DataGridView
+                txtDinheiro.Clear(); // Limpa o campo de dinheiro
+                txtDesconto.Clear(); // Limpa o campo de desconto
+                lblTroco.Text = "R$0,00"; // Reseta o troco
+                lblTotal.Text = "Total: R$0,00"; // Reseta o total
+            }
+        }
+
+        // Evento que ocorre ao pressionar a tecla Enter no campo de desconto
+        private void txtDesconto_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                AtualizarTotal(); // Atualiza o total ao pressionar Enter
+
+                e.Handled = true; // Evita o som de beep
+                e.SuppressKeyPress = true; // Evita o som de beep
+            }
+        }
+
+        // Evento que ocorre ao pressionar a tecla Enter no campo de dinheiro
+        private void txtDinheiro_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                // Verifica se o valor recebido é válido
+                if (string.IsNullOrWhiteSpace(txtDinheiro.Text) || !decimal.TryParse(txtDinheiro.Text, out decimal dinheiroRecebido) || dinheiroRecebido <= 0)
+                {
+                    lblTroco.Text = "R$0,00"; // Reseta o troco se o valor for inválido
+                    return;
+                }
+
+                // Verifica se o dinheiro recebido é suficiente
+                if (dinheiroRecebido < valorComDesconto)
+                {
+                    MessageBox.Show("Dinheiro insuficiente para a compra!", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    lblTroco.Text = $"Faltam: R${(valorComDesconto - dinheiroRecebido):0.00}"; // Mostra quanto falta
+                }
+                else
+                {
+                    decimal troco = dinheiroRecebido - valorComDesconto; // Calcula o troco
+                    lblTroco.Text = $"Troco: R${troco:0.00}"; // Exibe o troco
+                }
+            }
+        }
+
+        // Evento que ocorre ao clicar em uma célula do DataGridView
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
+            // Verifica se a coluna clicada é a de remover e se a linha é válida
             if (dataGridView1.Columns[e.ColumnIndex].Name == "Remover" && e.RowIndex >= 0)
             {
-                dataGridView1.Rows.RemoveAt(e.RowIndex);
+                dataGridView1.Rows.RemoveAt(e.RowIndex); // Remove a linha selecionada
+                AtualizarTotal(); // Atualiza o total após a remoção
             }
         }
 
-        public void CadastrarH(object sender, EventArgs e)
+        // Método para finalizar a compra
+        private void btnFinalizar_Click(object sender, EventArgs e)
         {
-            frmCadastrarH cadastro = new frmCadastrarH();
-            cadastro.Show();
-            this.Hide();
-        }
+            // Verifica se há itens no carrinho
+            if (dataGridView1.Rows.Count <= 0)
+            {
+                MessageBox.Show("Nenhum item no caixa para finalizar.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
 
-        private void Estoque(object sender, EventArgs e)
-        {
-            frmEstoque estoque = new frmEstoque();
-            estoque.Show();
-            this.Hide();
-        }
-
-        public void Historio(object sender, EventArgs e)
-        {
-            frmHisto cadastro = new frmHisto();
-            cadastro.Show();
-            this.Hide();
-        }
-
-        private void pbXis_Click(object sender, EventArgs e)
-        {
-            Application.Exit();
-        }
-
-        private void Entrou(object sender, EventArgs e)
-        {
             try
             {
-                ((Button)sender).BackColor = ColorTranslator.FromHtml("#FF8813");
+                using (MySqlConnection conn = new MySqlConnection(conexaoString))
+                {
+                    conn.Open(); // Abre a conexão com o banco de dados
+
+                    decimal totalCompra = 0; // Inicializa o total da compra
+
+                    // Calcula o total da compra
+                    foreach (DataGridViewRow row in dataGridView1.Rows)
+                    {
+                        if (row.IsNewRow) continue; // Ignora a nova linha
+
+                        string valorStr = row.Cells["valorTotal"].Value?.ToString()?.Replace("R$", "").Trim(); // Obtém o valor total
+                        if (decimal.TryParse(valorStr, out decimal valorLinha))
+                        {
+                            totalCompra += valorLinha; // Acumula o total
+                        }
+                    }
+
+                    // Aplica desconto se houver
+                    decimal desconto = 0;
+                    decimal valorComDesconto = totalCompra;
+                    if (!string.IsNullOrWhiteSpace(txtDesconto.Text) && decimal.TryParse(txtDesconto.Text, out decimal valorDesconto) && valorDesconto > 0)
+                    {
+                        desconto = (valorDesconto / 100m) * totalCompra; // Calcula o desconto
+                        valorComDesconto = totalCompra - desconto; // Aplica o desconto
+                        if (valorComDesconto < 0) valorComDesconto = 0; // Garante que o valor não fique negativo
+                    }
+
+                    // Processa cada item do carrinho
+                    foreach (DataGridViewRow row in dataGridView1.Rows)
+                    {
+                        if (row.IsNewRow) continue; // Ignora a nova linha
+
+                        string nomeProduto = row.Cells["nomeProduto"].Value?.ToString(); // Obtém o nome do produto
+                        string valorTotalStr = row.Cells["valorTotal"].Value?.ToString()?.Replace("R$", "").Trim(); // Obtém o valor total
+                        string valorUnitarioStr = row.Cells["valorUnitario"].Value?.ToString()?.Replace("R$", "").Trim(); // Obtém o valor unitário
+                        int quantidade = Convert.ToInt32(row.Cells["quantidade"].Value); // Obtém a quantidade
+
+                        if (decimal.TryParse(valorTotalStr, out decimal valorTotal) &&
+                            decimal.TryParse(valorUnitarioStr, out decimal valorUnitario))
+                        {
+                            // Busca o ID e o estoque do produto
+                            string buscarId = "SELECT idproduto, quant FROM produto WHERE produto = @nome";
+                            MySqlCommand cmdBuscar = new MySqlCommand(buscarId, conn);
+                            cmdBuscar.Parameters.AddWithValue("@nome", nomeProduto);
+
+                            int idProduto = 0;
+                            int estoqueAtual = 0;
+
+                            using (MySqlDataReader reader = cmdBuscar.ExecuteReader())
+                            {
+                                if (reader.Read())
+                                {
+                                    idProduto = reader.GetInt32("idproduto"); // Obtém o ID do produto
+                                    estoqueAtual = reader.GetInt32("quant"); // Obtém a quantidade em estoque
+                                }
+                                else
+                                {
+                                    MessageBox.Show($"Produto '{nomeProduto}' não encontrado.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    continue; // Continua para o próximo item se o produto não for encontrado
+                                }
+                            }
+
+                            // Atualiza o estoque do produto
+                            int novoEstoque = estoqueAtual - quantidade;
+                            if (novoEstoque < 0) novoEstoque = 0; // Garante que o estoque não fique negativo
+
+                            string atualizarEstoque = "UPDATE produto SET quant = @novaQuant, data_alteracao = CURRENT_DATE WHERE idproduto = @id";
+                            MySqlCommand cmdUpdate = new MySqlCommand(atualizarEstoque, conn);
+                            cmdUpdate.Parameters.AddWithValue("@novaQuant", novoEstoque);
+                            cmdUpdate.Parameters.AddWithValue("@id", idProduto);
+                            cmdUpdate.ExecuteNonQuery(); // Executa a atualização do estoque
+
+                            // Insere a venda na tabela de simulação
+                            string insertSimulacao = "INSERT INTO simulacao (quant, id_produto) VALUES (@quant, @id_produto)";
+                            MySqlCommand cmdSimulacao = new MySqlCommand(insertSimulacao, conn);
+                            cmdSimulacao.Parameters.AddWithValue("@quant", quantidade);
+                            cmdSimulacao.Parameters.AddWithValue("@id_produto", idProduto);
+                            cmdSimulacao.ExecuteNonQuery(); // Executa a inserção na tabela de simulação
+
+                            long idSimulacao = cmdSimulacao.LastInsertedId; // Obtém o ID da simulação inserida
+
+                            // Calcula o desconto proporcional
+                            decimal descontoProporcional = 0;
+                            if (totalCompra > 0)
+                            {
+                                descontoProporcional = (valorTotal / totalCompra) * desconto; // Calcula o desconto proporcional
+                            }
+
+                            decimal valorFinal = valorTotal - descontoProporcional; // Aplica o desconto ao valor total
+                            if (valorFinal < 0) valorFinal = 0; // Garante que o valor final não fique negativo
+
+                            // Insere o pagamento na tabela de pagamento
+                            string inserirPagamento = @"INSERT INTO Pagamento 
+                        (quant, nomeproduto, valortotal, valorcomdesconto, id_produto, id_simulacao) 
+                        VALUES (@quant, @nomeproduto, @valortotal, @valorcomdesconto, @idProduto, @idSimulacao)";
+                            MySqlCommand cmdInsert = new MySqlCommand(inserirPagamento, conn);
+                            cmdInsert.Parameters.AddWithValue("@quant", quantidade);
+                            cmdInsert.Parameters.AddWithValue("@nomeproduto", nomeProduto);
+                            cmdInsert.Parameters.AddWithValue("@valortotal", valorTotal);
+                            cmdInsert.Parameters.AddWithValue("@valorcomdesconto", valorFinal);
+                            cmdInsert.Parameters.AddWithValue("@idProduto", idProduto);
+                            cmdInsert.Parameters.AddWithValue("@idSimulacao", idSimulacao);
+                            cmdInsert.ExecuteNonQuery(); // Executa a inserção na tabela de pagamento
+                        }
+                    }
+
+                    MessageBox.Show("Venda finalizada com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information); // Mensagem de sucesso
+
+                    // Limpa os dados após a finalização da venda
+                    dataGridView1.Rows.Clear();
+                    lblTotal.Text = "Total: R$0,00";
+                    txtDesconto.Text = "";
+                    txtDinheiro.Text = "";
+                    lblTroco.Text = "Troco: R$0,00";
+                }
             }
-            catch
+            catch (Exception ex)
             {
-                pbXis.BackColor = Color.Red;
+                MessageBox.Show($"Erro ao finalizar a venda: {ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error); // Mensagem de erro
             }
         }
 
-        private void Saiu(object sender, EventArgs e)
+        // Método para arredondar os botões
+        private void ArredondarBotao(Control btn, int borderRadius)
         {
-            try
-            {
-                ((Button)sender).BackColor = ColorTranslator.FromHtml("#FAC100");
-            }
-            catch
-            {
-                pbXis.BackColor = Color.Transparent;
-            }
+            GraphicsPath path = new GraphicsPath();
+            path.AddArc(0, 0, borderRadius, borderRadius, 180, 90); // Adiciona arco no canto superior esquerdo
+            path.AddArc(btn.Width - borderRadius, 0, borderRadius, borderRadius, 270, 90); // Adiciona arco no canto superior direito
+            path.AddArc(btn.Width - borderRadius, btn.Height - borderRadius, borderRadius, borderRadius, 0, 90); // Adiciona arco no canto inferior direito
+            path.AddArc(0, btn.Height - borderRadius, borderRadius, borderRadius, 90, 90); // Adiciona arco no canto inferior esquerdo path.CloseFigure(); // Fecha a figura do caminho
+
+            btn.Region = new Region(path); // Define a região do botão com o caminho arredondado
         }
 
+        // Método para atualizar o total da compra
+        private void AtualizarTotal()
+        {
+            totalCompra = 0; // Reseta o total da compra
+
+            // Calcula o total com base nos itens do DataGridView
+            foreach (DataGridViewRow row in dataGridView1.Rows)
+            {
+                if (row.IsNewRow) continue; // Ignora a nova linha
+
+                if (row.Cells["valorTotal"].Value != null)
+                {
+                    string valorStr = row.Cells["valorTotal"].Value.ToString().Replace("R$", "").Trim(); // Obtém o valor total
+
+                    if (decimal.TryParse(valorStr, out decimal valorLinha))
+                    {
+                        totalCompra += valorLinha; // Acumula o total
+                    }
+                }
+            }
+
+            descontoAplicado = 0; // Reseta o desconto aplicado
+            valorComDesconto = totalCompra; // Inicializa o valor com desconto
+
+            // Aplica desconto percentual se houver
+            if (!string.IsNullOrWhiteSpace(txtDesconto.Text) &&
+                decimal.TryParse(txtDesconto.Text, out decimal porcentagemDesconto) &&
+                porcentagemDesconto > 0)
+            {
+                if (porcentagemDesconto > 100) porcentagemDesconto = 100; // Limita o desconto a 100%
+
+                descontoAplicado = porcentagemDesconto; // Atualiza o desconto aplicado
+                decimal descontoValor = totalCompra * (porcentagemDesconto / 100); // Calcula o valor do desconto
+                valorComDesconto = totalCompra - descontoValor; // Aplica o desconto ao total
+
+                lblTotal.Text = $"Total com {porcentagemDesconto}% de desconto: R${valorComDesconto:0.00}"; // Exibe o total com desconto
+            }
+            else
+            {
+                lblTotal.Text = $"Total: R${totalCompra:0.00}"; // Exibe o total sem desconto
+            }
+        }
     }
 }
