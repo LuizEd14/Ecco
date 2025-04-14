@@ -135,15 +135,15 @@ namespace Ecco_Casa_de_Fogoes // Define o namespace do projeto
 
                     // Consulta SQL para obter os dados de pagamento
                     string query = @"SELECT 
-                    p.idvenda AS 'ID da Venda',
-                    p.datacompra AS 'Data da Compra',
-                    p.nomeproduto AS 'Produto',
-                    p.quant AS 'Quantidade',
-                    p.valortotal AS 'Valor Total',
-                    p.valorcomdesconto AS 'Com Desconto',
-                    p.id_produto AS 'ID Produto'
-                    FROM Pagamento p
-                    ORDER BY p.datacompra DESC"; // Ordena os resultados pela data da compra
+                p.idvenda AS 'ID da Venda',
+                p.datacompra AS 'Data da Compra',
+                p.nomeproduto AS 'Produto',
+                p.quant AS 'Quantidade',
+                p.valortotal AS 'Valor Total',
+                p.valorcomdesconto AS 'Com Desconto',
+                p.id_produto AS 'ID Produto'
+                FROM Pagamento p
+                ORDER BY p.datacompra DESC"; // Ordena os resultados pela data da compra
 
                     MySqlDataAdapter adapter = new MySqlDataAdapter(query, conn); // Cria um adaptador para preencher o DataTable
                     DataTable tabela = new DataTable(); // Cria um novo DataTable
@@ -152,6 +152,16 @@ namespace Ecco_Casa_de_Fogoes // Define o namespace do projeto
                     if (tabela.Rows.Count > 0)
                     {
                         dataGridView1.DataSource = tabela; // Define a fonte de dados do DataGridView
+
+                        // Formatação de moeda (R$) nas colunas de valores
+                        dataGridView1.Columns["Valor Total"].DefaultCellStyle.Format = "C2";
+                        dataGridView1.Columns["Valor Total"].DefaultCellStyle.FormatProvider = new System.Globalization.CultureInfo("pt-BR");
+
+                        dataGridView1.Columns["Com Desconto"].DefaultCellStyle.Format = "C2";
+                        dataGridView1.Columns["Com Desconto"].DefaultCellStyle.FormatProvider = new System.Globalization.CultureInfo("pt-BR");
+
+                        //Data e hora
+                        dataGridView1.Columns["Data da Compra"].DefaultCellStyle.Format = "dd/MM/yyyy HH:mm:ss";
                     }
                     else
                     {
@@ -164,6 +174,7 @@ namespace Ecco_Casa_de_Fogoes // Define o namespace do projeto
                 }
             }
         }
+
 
         // Método para pesquisar pagamentos com base em um termo
         private void PesquisarPagamento(string termo)

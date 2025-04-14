@@ -130,6 +130,10 @@ namespace Ecco_Casa_de_Fogoes
                     dataGridView1.Columns["data_insercao"].HeaderText = "Data de inserção";
                     dataGridView1.Columns["data_alteracao"].HeaderText = "Data de alteração";
 
+                    // Formata a coluna de valorunidade como moeda (R$)
+                    dataGridView1.Columns["valorunidade"].DefaultCellStyle.Format = "C2";
+                    dataGridView1.Columns["valorunidade"].DefaultCellStyle.FormatProvider = new System.Globalization.CultureInfo("pt-BR");
+
                     // Remove colunas de botões se já existirem
                     if (dataGridView1.Columns.Contains("Editar"))
                         dataGridView1.Columns.Remove("Editar");
@@ -160,6 +164,7 @@ namespace Ecco_Casa_de_Fogoes
                 }
             }
         }
+
 
         // Trata o clique nos botões dentro do DataGridView
         private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)

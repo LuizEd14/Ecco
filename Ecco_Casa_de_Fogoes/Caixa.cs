@@ -360,8 +360,8 @@ namespace Ecco_Casa_de_Fogoes // Define o namespace do projeto
 
                             // Insere o pagamento na tabela de pagamento
                             string inserirPagamento = @"INSERT INTO Pagamento 
-                        (quant, nomeproduto, valortotal, valorcomdesconto, id_produto, id_simulacao) 
-                        VALUES (@quant, @nomeproduto, @valortotal, @valorcomdesconto, @idProduto, @idSimulacao)";
+                            (quant, nomeproduto, valortotal, valorcomdesconto, id_produto, id_simulacao, datacompra) 
+                            VALUES (@quant, @nomeproduto, @valortotal, @valorcomdesconto, @idProduto, @idSimulacao, @datacompra)";
                             MySqlCommand cmdInsert = new MySqlCommand(inserirPagamento, conn);
                             cmdInsert.Parameters.AddWithValue("@quant", quantidade);
                             cmdInsert.Parameters.AddWithValue("@nomeproduto", nomeProduto);
@@ -369,6 +369,9 @@ namespace Ecco_Casa_de_Fogoes // Define o namespace do projeto
                             cmdInsert.Parameters.AddWithValue("@valorcomdesconto", valorFinal);
                             cmdInsert.Parameters.AddWithValue("@idProduto", idProduto);
                             cmdInsert.Parameters.AddWithValue("@idSimulacao", idSimulacao);
+                            cmdInsert.Parameters.AddWithValue("@datacompra", DateTime.Now); // Adiciona data e hora atual
+                            cmdInsert.ExecuteNonQuery(); // Executa a inserção na tabela de pagamento
+
                             cmdInsert.ExecuteNonQuery(); // Executa a inserção na tabela de pagamento
                         }
                     }
@@ -434,7 +437,7 @@ namespace Ecco_Casa_de_Fogoes // Define o namespace do projeto
 
                 descontoAplicado = porcentagemDesconto; // Atualiza o desconto aplicado
                 decimal descontoValor = totalCompra * (porcentagemDesconto / 100); // Calcula o valor do desconto
-                valorComDesconto = totalCompra - descontoValor; // Aplica o desconto ao total
+                valorComDesconto = totalCompra - (Math.Truncate(descontoValor * 100) / 100); // Aplica o desconto ao total
 
                 lblTotal.Text = $"Total com {porcentagemDesconto}% de desconto: R${valorComDesconto:0.00}"; // Exibe o total com desconto
             }
