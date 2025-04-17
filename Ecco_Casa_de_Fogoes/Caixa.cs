@@ -28,8 +28,8 @@ namespace Ecco_Casa_de_Fogoes // Define o namespace do projeto
             InitializeComponent(); // Inicializa os componentes do formulário
 
             // Configurações do DataGridView
-            dataGridView1.DefaultCellStyle.Font = new Font("Montserrat", 15); // Fonte das células
-            dataGridView1.ColumnHeadersDefaultCellStyle.Font = new Font("Montserrat", 22, FontStyle.Bold); // Fonte dos cabeçalhos
+            dataGridView1.DefaultCellStyle.Font = new Font("Montserrat", 12); // Fonte das células
+            dataGridView1.ColumnHeadersDefaultCellStyle.Font = new Font("Montserrat", 18, FontStyle.Bold); // Fonte dos cabeçalhos
             dataGridView1.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; // Alinhamento das células
             dataGridView1.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; // Alinhamento dos cabeçalhos
             dataGridView1.ColumnHeadersDefaultCellStyle.BackColor = ColorTranslator.FromHtml("#FAC100"); // Cor de fundo dos cabeçalhos
@@ -150,6 +150,9 @@ namespace Ecco_Casa_de_Fogoes // Define o namespace do projeto
                             if (quantidade > estoqueAtual)
                             {
                                 MessageBox.Show("Estoque insuficiente! Quantidade disponível: " + estoqueAtual, "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                txtQuantidade.Clear();
+                                txtQuantidade.Focus();
+                                return;
                             }
                             else
                             {
@@ -266,113 +269,121 @@ namespace Ecco_Casa_de_Fogoes // Define o namespace do projeto
 
             try
             {
-                using (MySqlConnection conn = new MySqlConnection(conexaoString))
+                DialogResult resultado = MessageBox.Show(
+                "Deseja Finalizar a compra?", // Pergunta de confirmação
+                "Confirmação",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question
+                );
+
+                if (resultado == DialogResult.Yes)
                 {
-                    conn.Open(); // Abre a conexão com o banco de dados
-
-                    decimal totalCompra = 0; // Inicializa o total da compra
-
-                    // Calcula o total da compra
-                    foreach (DataGridViewRow row in dataGridView1.Rows)
+                    using (MySqlConnection conn = new MySqlConnection(conexaoString))
                     {
-                        if (row.IsNewRow) continue; // Ignora a nova linha
+                        conn.Open(); // Abre a conexão com o banco de dados
 
-                        string valorStr = row.Cells["valorTotal"].Value?.ToString()?.Replace("R$", "").Trim(); // Obtém o valor total
-                        if (decimal.TryParse(valorStr, out decimal valorLinha))
+                        decimal totalCompra = 0; // Inicializa o total da compra
+
+                        // Calcula o total da compra
+                        foreach (DataGridViewRow row in dataGridView1.Rows)
                         {
-                            totalCompra += valorLinha; // Acumula o total
+                            if (row.IsNewRow) continue; // Ignora a nova linha
+
+                            string valorStr = row.Cells["valorTotal"].Value?.ToString()?.Replace("R$", "").Trim(); // Obtém o valor total
+                            if (decimal.TryParse(valorStr, out decimal valorLinha))
+                            {
+                                totalCompra += valorLinha; // Acumula o total
+                            }
                         }
-                    }
 
-                    // Aplica desconto se houver
-                    decimal desconto = 0;
-                    decimal valorComDesconto = totalCompra;
-                    if (!string.IsNullOrWhiteSpace(txtDesconto.Text) && decimal.TryParse(txtDesconto.Text, out decimal valorDesconto) && valorDesconto > 0)
-                    {
-                        desconto = (valorDesconto / 100m) * totalCompra; // Calcula o desconto
-                        valorComDesconto = totalCompra - desconto; // Aplica o desconto
-                        if (valorComDesconto < 0) valorComDesconto = 0; // Garante que o valor não fique negativo
-                    }
-
-                    // Processa cada item do carrinho
-                    foreach (DataGridViewRow row in dataGridView1.Rows)
-                    {
-                        if (row.IsNewRow) continue; // Ignora a nova linha
-
-                        string nomeProduto = row.Cells["nomeProduto"].Value?.ToString(); // Obtém o nome do produto
-                        string valorTotalStr = row.Cells["valorTotal"].Value?.ToString()?.Replace("R$", "").Trim(); // Obtém o valor total
-                        string valorUnitarioStr = row.Cells["valorUnitario"].Value?.ToString()?.Replace("R$", "").Trim(); // Obtém o valor unitário
-                        int quantidade = Convert.ToInt32(row.Cells["quantidade"].Value); // Obtém a quantidade
-
-                        if (decimal.TryParse(valorTotalStr, out decimal valorTotal) &&
-                            decimal.TryParse(valorUnitarioStr, out decimal valorUnitario))
+                        // Aplica desconto se houver
+                        decimal desconto = 0;
+                        decimal valorComDesconto = totalCompra;
+                        if (!string.IsNullOrWhiteSpace(txtDesconto.Text) && decimal.TryParse(txtDesconto.Text, out decimal valorDesconto) && valorDesconto > 0)
                         {
-                            // Busca o ID e o estoque do produto
-                            string buscarId = "SELECT idproduto, quant FROM produto WHERE produto = @nome";
-                            MySqlCommand cmdBuscar = new MySqlCommand(buscarId, conn);
-                            cmdBuscar.Parameters.AddWithValue("@nome", nomeProduto);
+                            desconto = (valorDesconto / 100m) * totalCompra; // Calcula o desconto
+                            valorComDesconto = totalCompra - desconto; // Aplica o desconto
+                            if (valorComDesconto < 0) valorComDesconto = 0; // Garante que o valor não fique negativo
+                        }
 
-                            int idProduto = 0;
-                            int estoqueAtual = 0;
+                        // Processa cada item do carrinho
+                        foreach (DataGridViewRow row in dataGridView1.Rows)
+                        {
+                            if (row.IsNewRow) continue; // Ignora a nova linha
 
-                            using (MySqlDataReader reader = cmdBuscar.ExecuteReader())
+                            string nomeProduto = row.Cells["nomeProduto"].Value?.ToString(); // Obtém o nome do produto
+                            string valorTotalStr = row.Cells["valorTotal"].Value?.ToString()?.Replace("R$", "").Trim(); // Obtém o valor total
+                            string valorUnitarioStr = row.Cells["valorUnitario"].Value?.ToString()?.Replace("R$", "").Trim(); // Obtém o valor unitário
+                            int quantidade = Convert.ToInt32(row.Cells["quantidade"].Value); // Obtém a quantidade
+
+                            if (decimal.TryParse(valorTotalStr, out decimal valorTotal) &&
+                                decimal.TryParse(valorUnitarioStr, out decimal valorUnitario))
                             {
-                                if (reader.Read())
+                                // Busca o ID e o estoque do produto
+                                string buscarId = "SELECT idproduto, quant FROM produto WHERE produto = @nome";
+                                MySqlCommand cmdBuscar = new MySqlCommand(buscarId, conn);
+                                cmdBuscar.Parameters.AddWithValue("@nome", nomeProduto);
+
+                                int idProduto = 0;
+                                int estoqueAtual = 0;
+
+                                using (MySqlDataReader reader = cmdBuscar.ExecuteReader())
                                 {
-                                    idProduto = reader.GetInt32("idproduto"); // Obtém o ID do produto
-                                    estoqueAtual = reader.GetInt32("quant"); // Obtém a quantidade em estoque
+                                    if (reader.Read())
+                                    {
+                                        idProduto = reader.GetInt32("idproduto"); // Obtém o ID do produto
+                                        estoqueAtual = reader.GetInt32("quant"); // Obtém a quantidade em estoque
+                                    }
+                                    else
+                                    {
+                                        MessageBox.Show($"Produto '{nomeProduto}' não encontrado.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                        continue; // Continua para o próximo item se o produto não for encontrado
+                                    }
                                 }
-                                else
+
+                                // Atualiza o estoque do produto
+                                int novoEstoque = estoqueAtual - quantidade;
+                                if (novoEstoque < 0) novoEstoque = 0; // Garante que o estoque não fique negativo
+
+                                string atualizarEstoque = "UPDATE produto SET quant = @novaQuant, data_alteracao = CURRENT_DATE WHERE idproduto = @id";
+                                MySqlCommand cmdUpdate = new MySqlCommand(atualizarEstoque, conn);
+                                cmdUpdate.Parameters.AddWithValue("@novaQuant", novoEstoque);
+                                cmdUpdate.Parameters.AddWithValue("@id", idProduto);
+                                cmdUpdate.ExecuteNonQuery(); // Executa a atualização do estoque
+
+                                // Insere a venda na tabela de simulação
+                                string insertSimulacao = "INSERT INTO simulacao (quant, id_produto) VALUES (@quant, @id_produto)";
+                                MySqlCommand cmdSimulacao = new MySqlCommand(insertSimulacao, conn);
+                                cmdSimulacao.Parameters.AddWithValue("@quant", quantidade);
+                                cmdSimulacao.Parameters.AddWithValue("@id_produto", idProduto);
+                                cmdSimulacao.ExecuteNonQuery(); // Executa a inserção na tabela de simulação
+
+                                long idSimulacao = cmdSimulacao.LastInsertedId; // Obtém o ID da simulação inserida
+
+                                // Calcula o desconto proporcional
+                                decimal descontoProporcional = 0;
+                                if (totalCompra > 0)
                                 {
-                                    MessageBox.Show($"Produto '{nomeProduto}' não encontrado.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                    continue; // Continua para o próximo item se o produto não for encontrado
+                                    descontoProporcional = (valorTotal / totalCompra) * desconto; // Calcula o desconto proporcional
                                 }
-                            }
 
-                            // Atualiza o estoque do produto
-                            int novoEstoque = estoqueAtual - quantidade;
-                            if (novoEstoque < 0) novoEstoque = 0; // Garante que o estoque não fique negativo
+                                decimal valorFinal = valorTotal - descontoProporcional; // Aplica o desconto ao valor total
+                                if (valorFinal < 0) valorFinal = 0; // Garante que o valor final não fique negativo
 
-                            string atualizarEstoque = "UPDATE produto SET quant = @novaQuant, data_alteracao = CURRENT_DATE WHERE idproduto = @id";
-                            MySqlCommand cmdUpdate = new MySqlCommand(atualizarEstoque, conn);
-                            cmdUpdate.Parameters.AddWithValue("@novaQuant", novoEstoque);
-                            cmdUpdate.Parameters.AddWithValue("@id", idProduto);
-                            cmdUpdate.ExecuteNonQuery(); // Executa a atualização do estoque
-
-                            // Insere a venda na tabela de simulação
-                            string insertSimulacao = "INSERT INTO simulacao (quant, id_produto) VALUES (@quant, @id_produto)";
-                            MySqlCommand cmdSimulacao = new MySqlCommand(insertSimulacao, conn);
-                            cmdSimulacao.Parameters.AddWithValue("@quant", quantidade);
-                            cmdSimulacao.Parameters.AddWithValue("@id_produto", idProduto);
-                            cmdSimulacao.ExecuteNonQuery(); // Executa a inserção na tabela de simulação
-
-                            long idSimulacao = cmdSimulacao.LastInsertedId; // Obtém o ID da simulação inserida
-
-                            // Calcula o desconto proporcional
-                            decimal descontoProporcional = 0;
-                            if (totalCompra > 0)
-                            {
-                                descontoProporcional = (valorTotal / totalCompra) * desconto; // Calcula o desconto proporcional
-                            }
-
-                            decimal valorFinal = valorTotal - descontoProporcional; // Aplica o desconto ao valor total
-                            if (valorFinal < 0) valorFinal = 0; // Garante que o valor final não fique negativo
-
-                            // Insere o pagamento na tabela de pagamento
-                            string inserirPagamento = @"INSERT INTO Pagamento 
+                                // Insere o pagamento na tabela de pagamento
+                                string inserirPagamento = @"INSERT INTO Pagamento 
                             (quant, nomeproduto, valortotal, valorcomdesconto, id_produto, id_simulacao, datacompra) 
                             VALUES (@quant, @nomeproduto, @valortotal, @valorcomdesconto, @idProduto, @idSimulacao, @datacompra)";
-                            MySqlCommand cmdInsert = new MySqlCommand(inserirPagamento, conn);
-                            cmdInsert.Parameters.AddWithValue("@quant", quantidade);
-                            cmdInsert.Parameters.AddWithValue("@nomeproduto", nomeProduto);
-                            cmdInsert.Parameters.AddWithValue("@valortotal", valorTotal);
-                            cmdInsert.Parameters.AddWithValue("@valorcomdesconto", valorFinal);
-                            cmdInsert.Parameters.AddWithValue("@idProduto", idProduto);
-                            cmdInsert.Parameters.AddWithValue("@idSimulacao", idSimulacao);
-                            cmdInsert.Parameters.AddWithValue("@datacompra", DateTime.Now); // Adiciona data e hora atual
-                            cmdInsert.ExecuteNonQuery(); // Executa a inserção na tabela de pagamento
-
-                            cmdInsert.ExecuteNonQuery(); // Executa a inserção na tabela de pagamento
+                                MySqlCommand cmdInsert = new MySqlCommand(inserirPagamento, conn);
+                                cmdInsert.Parameters.AddWithValue("@quant", quantidade);
+                                cmdInsert.Parameters.AddWithValue("@nomeproduto", nomeProduto);
+                                cmdInsert.Parameters.AddWithValue("@valortotal", valorTotal);
+                                cmdInsert.Parameters.AddWithValue("@valorcomdesconto", valorFinal);
+                                cmdInsert.Parameters.AddWithValue("@idProduto", idProduto);
+                                cmdInsert.Parameters.AddWithValue("@idSimulacao", idSimulacao);
+                                cmdInsert.Parameters.AddWithValue("@datacompra", DateTime.Now); // Adiciona data e hora atual
+                                cmdInsert.ExecuteNonQuery(); // Executa a inserção na tabela de pagamento
+                            }
                         }
                     }
 
@@ -384,6 +395,10 @@ namespace Ecco_Casa_de_Fogoes // Define o namespace do projeto
                     txtDesconto.Text = "";
                     txtDinheiro.Text = "";
                     lblTroco.Text = "Troco: R$0,00";
+                }
+                else
+                {
+                    return;
                 }
             }
             catch (Exception ex)

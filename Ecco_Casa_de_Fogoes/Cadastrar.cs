@@ -28,6 +28,7 @@ namespace Ecco_Casa_de_Fogoes
         {
             InitializeComponent();
             ArredondarBotao(btnSalvar, 45); // Arredonda o botão "Salvar"
+            ArredondarBotao(btnCancelar, 45); // Arredonda o botão "Cancelar"
         }
 
         // Construtor usado para edição de produto, preenchendo os campos
@@ -67,6 +68,13 @@ namespace Ecco_Casa_de_Fogoes
         {
             frmHisto cadastro = new frmHisto();
             cadastro.Show();
+            this.Hide();
+        }
+
+        private void btnCancelar_Click(object sender, EventArgs e)
+        {
+            frmEstoque estoque = new frmEstoque();
+            estoque.Show();
             this.Hide();
         }
 

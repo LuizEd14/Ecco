@@ -25,19 +25,20 @@ namespace Ecco_Casa_de_Fogoes // Define o namespace do projeto
             // Arredonda os botões e configurações do DataGridView
             ArredondarBotao(panel5, 45);
             ArredondarBotao(btnPesquisar, 40);
-            dataGridView1.DefaultCellStyle.Font = new Font("Montserrat", 15); // Define a fonte das células
-            dataGridView1.ColumnHeadersDefaultCellStyle.Font = new Font("Montserrat", 20, FontStyle.Bold); // Define a fonte dos cabeçalhos
+            dataGridView1.DefaultCellStyle.Font = new Font("Montserrat", 12); // Define a fonte das células
+            dataGridView1.ColumnHeadersDefaultCellStyle.Font = new Font("Montserrat", 18, FontStyle.Bold); // Define a fonte dos cabeçalhos
             dataGridView1.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; // Alinha o conteúdo das células ao centro
             dataGridView1.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; // Alinha os cabeçalhos ao centro
             dataGridView1.ColumnHeadersDefaultCellStyle.BackColor = Color.White; // Define a cor de fundo dos cabeçalhos
             dataGridView1.ColumnHeadersDefaultCellStyle.ForeColor = ColorTranslator.FromHtml("#1723A6"); // Define a cor do texto dos cabeçalhos
             dataGridView1.EnableHeadersVisualStyles = false; // Desabilita estilos visuais padrão
+            dataGridView1.AllowUserToAddRows = false; // Impede que o usuário adicione novas linhas
         }
 
         // Evento que ocorre ao carregar o formulário
         private void frmHisto_Load(object sender, EventArgs e)
         {
-            CarregarDadosPagamento(); // Carrega os dados de pagamento ao iniciar
+            CarregarDados(); // Carrega os dados de pagamento ao iniciar
         }
 
         // Método para abrir o formulário de cadastro
@@ -120,57 +121,51 @@ namespace Ecco_Casa_de_Fogoes // Define o namespace do projeto
             }
             else
             {
-                CarregarDadosPagamento(); // Se estiver vazio, carrega todos os dados
+                CarregarDados(); // Se estiver vazio, carrega todos os dados
             }
         }
 
         // Método para carregar dados de pagamento no DataGridView
-        private void CarregarDadosPagamento()
+        private void CarregarDados()
         {
-            using (MySqlConnection conn = new MySqlConnection(conexaoString)) // Cria uma nova conexão com o banco de dados
+            using (MySqlConnection conexao = new MySqlConnection(conexaoString))
             {
                 try
                 {
-                    conn.Open(); // Abre a conexão
+                    conexao.Open();
+                    string query = "SELECT * FROM pagamento";
+                    MySqlCommand comando = new MySqlCommand(query, conexao);
+                    MySqlDataAdapter adaptador = new MySqlDataAdapter(comando);
+                    DataTable tabela = new DataTable();
+                    adaptador.Fill(tabela);
 
-                    // Consulta SQL para obter os dados de pagamento
-                    string query = @"SELECT 
-                p.idvenda AS 'ID da Venda',
-                p.datacompra AS 'Data da Compra',
-                p.nomeproduto AS 'Produto',
-                p.quant AS 'Quantidade',
-                p.valortotal AS 'Valor Total',
-                p.valorcomdesconto AS 'Com Desconto',
-                p.id_produto AS 'ID Produto'
-                FROM Pagamento p
-                ORDER BY p.datacompra DESC"; // Ordena os resultados pela data da compra
+                    dataGridView1.DataSource = tabela;
 
-                    MySqlDataAdapter adapter = new MySqlDataAdapter(query, conn); // Cria um adaptador para preencher o DataTable
-                    DataTable tabela = new DataTable(); // Cria um novo DataTable
-                    adapter.Fill(tabela); // Preenche o DataTable com os dados da consulta
+                    // Renomeia os cabeçalhos das colunas
+                    dataGridView1.Columns["idvenda"].HeaderText = "ID da venda";
+                    dataGridView1.Columns["id_produto"].HeaderText = "Código do produto";
+                    dataGridView1.Columns["nomeproduto"].HeaderText = "Produto";
+                    dataGridView1.Columns["quant"].HeaderText = "Quantidade";
+                    dataGridView1.Columns["valortotal"].HeaderText = "Valor total";
+                    dataGridView1.Columns["valorcomdesconto"].HeaderText = "Valor com desconto";
+                    dataGridView1.Columns["datacompra"].HeaderText = "Data da compra";
 
-                    if (tabela.Rows.Count > 0)
-                    {
-                        dataGridView1.DataSource = tabela; // Define a fonte de dados do DataGridView
 
-                        // Formatação de moeda (R$) nas colunas de valores
-                        dataGridView1.Columns["Valor Total"].DefaultCellStyle.Format = "C2";
-                        dataGridView1.Columns["Valor Total"].DefaultCellStyle.FormatProvider = new System.Globalization.CultureInfo("pt-BR");
+                    // Formata a coluna datacompra para mostrar data e hora
+                    dataGridView1.Columns["datacompra"].DefaultCellStyle.Format = "dd/MM/yyyy HH:mm:ss";
 
-                        dataGridView1.Columns["Com Desconto"].DefaultCellStyle.Format = "C2";
-                        dataGridView1.Columns["Com Desconto"].DefaultCellStyle.FormatProvider = new System.Globalization.CultureInfo("pt-BR");
+                    // Esconde a coluna ID da simulação
+                    dataGridView1.Columns["id_simulacao"].Visible = false;
 
-                        //Data e hora
-                        dataGridView1.Columns["Data da Compra"].DefaultCellStyle.Format = "dd/MM/yyyy HH:mm:ss";
-                    }
-                    else
-                    {
-                        dataGridView1.DataSource = null; // Limpa a fonte de dados se não houver dados
-                    }
+                    // Formata a coluna de valorunidade como moeda (R$)
+                    dataGridView1.Columns["valortotal"].DefaultCellStyle.Format = "C2";
+                    dataGridView1.Columns["valortotal"].DefaultCellStyle.FormatProvider = new System.Globalization.CultureInfo("pt-BR");
+                    dataGridView1.Columns["valorcomdesconto"].DefaultCellStyle.Format = "C2";
+                    dataGridView1.Columns["valorcomdesconto"].DefaultCellStyle.FormatProvider = new System.Globalization.CultureInfo("pt-BR");
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Erro ao carregar o histórico: {ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error); // Mensagem de erro
+                    MessageBox.Show("Erro ao carregar dados: " + ex.Message);
                 }
             }
         }
@@ -179,36 +174,28 @@ namespace Ecco_Casa_de_Fogoes // Define o namespace do projeto
         // Método para pesquisar pagamentos com base em um termo
         private void PesquisarPagamento(string termo)
         {
-            using (MySqlConnection conn = new MySqlConnection(conexaoString)) // Cria uma nova conexão com o banco de dados
+            using (MySqlConnection conexao = new MySqlConnection(conexaoString)) // Cria uma nova conexão com o banco de dados
             {
                 try
                 {
-                    conn.Open(); // Abre a conexão
+                    conexao.Open();
+                    string query = "SELECT * FROM pagamento WHERE nomeproduto LIKE @termo OR id_produto LIKE @termo OR datacompra LIKE @termo";
+                    MySqlCommand comando = new MySqlCommand(query, conexao);
+                    comando.Parameters.AddWithValue("@termo", "%" + termo + "%");
 
-                    // Consulta SQL para pesquisar pagamentos
-                    string query = @"SELECT 
-                                p.idvenda AS 'ID da Venda',
-                                p.datacompra AS 'Data da Compra',
-                                p.nomeproduto AS 'Produto',
-                                p.quant AS 'Quantidade',
-                                p.valortotal AS 'Valor Total',
-                                p.valorcomdesconto AS 'Com Desconto',
-                                p.id_produto AS 'ID Produto'
-                             FROM Pagamento p
-                             WHERE p.nomeproduto LIKE @termo
-                                OR p.idvenda LIKE @termo
-                                OR p.id_produto LIKE @termo
-                                OR DATE_FORMAT(p.datacompra, '%d/%m/%Y') LIKE @termo
-                             ORDER BY p.datacompra DESC"; // Ordena os resultados pela data da compra
+                    MySqlDataAdapter adaptador = new MySqlDataAdapter(comando);
+                    DataTable tabela = new DataTable();
+                    adaptador.Fill(tabela);
 
-                    MySqlCommand cmd = new MySqlCommand(query, conn); // Cria um comando SQL
-                    cmd.Parameters.AddWithValue("@termo", "%" + termo + "%"); // Adiciona o parâmetro da consulta
+                    dataGridView1.DataSource = tabela;
 
-                    MySqlDataAdapter adapter = new MySqlDataAdapter(cmd); // Cria um adaptador para preencher o DataTable
-                    DataTable tabela = new DataTable(); // Cria um novo DataTable
-                    adapter.Fill(tabela); // Preenche o DataTable com os dados da consulta
-
-                    dataGridView1.DataSource = tabela; // Define a fonte de dados do DataGridView
+                    dataGridView1.Columns["idvenda"].HeaderText = "ID da venda";
+                    dataGridView1.Columns["id_produto"].HeaderText = "Código do produto";
+                    dataGridView1.Columns["nomeproduto"].HeaderText = "Produto";
+                    dataGridView1.Columns["quant"].HeaderText = "Quantidade";
+                    dataGridView1.Columns["valortotal"].HeaderText = "Valor total";
+                    dataGridView1.Columns["valorcomdesconto"].HeaderText = "Valor com desconto";
+                    dataGridView1.Columns["datacompra"].HeaderText = "Data da compra";
                 }
                 catch (Exception ex)
                 {
