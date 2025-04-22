@@ -36,6 +36,7 @@ namespace Ecco_Casa_de_Fogoes
             this.btnEstoque = new System.Windows.Forms.Button();
             this.btnCadastrarP = new System.Windows.Forms.Button();
             this.panel4 = new System.Windows.Forms.Panel();
+            this.lblTotal = new System.Windows.Forms.Label();
             this.btnFinalizar = new System.Windows.Forms.Button();
             this.pbLogo = new System.Windows.Forms.PictureBox();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
@@ -47,14 +48,15 @@ namespace Ecco_Casa_de_Fogoes
             this.panel3 = new System.Windows.Forms.Panel();
             this.panel5 = new System.Windows.Forms.Panel();
             this.lblTroco = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
+            this.lblMostTroco = new System.Windows.Forms.Label();
+            this.lblDinDin = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.txtDinheiro = new System.Windows.Forms.TextBox();
             this.txtDesconto = new System.Windows.Forms.TextBox();
             this.txtQuantidade = new System.Windows.Forms.TextBox();
             this.txtID = new System.Windows.Forms.TextBox();
-            this.lblTotal = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.cbTipoPag = new System.Windows.Forms.ComboBox();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbXis)).BeginInit();
             this.panel4.SuspendLayout();
@@ -192,6 +194,19 @@ namespace Ecco_Casa_de_Fogoes
             this.panel4.Size = new System.Drawing.Size(1124, 101);
             this.panel4.TabIndex = 4;
             // 
+            // lblTotal
+            // 
+            this.lblTotal.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.lblTotal.AutoSize = true;
+            this.lblTotal.Font = new System.Drawing.Font("Montserrat", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTotal.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(23)))), ((int)(((byte)(35)))), ((int)(((byte)(166)))));
+            this.lblTotal.Location = new System.Drawing.Point(139, 30);
+            this.lblTotal.Name = "lblTotal";
+            this.lblTotal.Size = new System.Drawing.Size(186, 38);
+            this.lblTotal.TabIndex = 2;
+            this.lblTotal.Text = "Total: R$ 0,00";
+            // 
             // btnFinalizar
             // 
             this.btnFinalizar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
@@ -315,9 +330,11 @@ namespace Ecco_Casa_de_Fogoes
             // 
             this.panel3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.panel3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(217)))), ((int)(((byte)(217)))), ((int)(((byte)(217)))));
+            this.panel3.Controls.Add(this.cbTipoPag);
+            this.panel3.Controls.Add(this.label6);
             this.panel3.Controls.Add(this.panel5);
-            this.panel3.Controls.Add(this.label3);
-            this.panel3.Controls.Add(this.label2);
+            this.panel3.Controls.Add(this.lblMostTroco);
+            this.panel3.Controls.Add(this.lblDinDin);
             this.panel3.Controls.Add(this.label1);
             this.panel3.Controls.Add(this.txtDinheiro);
             this.panel3.Controls.Add(this.txtDesconto);
@@ -331,46 +348,50 @@ namespace Ecco_Casa_de_Fogoes
             this.panel5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.panel5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(23)))), ((int)(((byte)(35)))), ((int)(((byte)(166)))));
             this.panel5.Controls.Add(this.lblTroco);
-            this.panel5.Location = new System.Drawing.Point(392, 51);
+            this.panel5.Location = new System.Drawing.Point(379, 124);
             this.panel5.Name = "panel5";
-            this.panel5.Size = new System.Drawing.Size(200, 117);
+            this.panel5.Size = new System.Drawing.Size(200, 80);
             this.panel5.TabIndex = 5;
+            this.panel5.Visible = false;
             // 
             // lblTroco
             // 
+            this.lblTroco.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblTroco.Font = new System.Drawing.Font("Montserrat", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblTroco.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(193)))), ((int)(((byte)(0)))));
             this.lblTroco.Location = new System.Drawing.Point(0, 0);
             this.lblTroco.Name = "lblTroco";
-            this.lblTroco.Size = new System.Drawing.Size(200, 117);
+            this.lblTroco.Size = new System.Drawing.Size(200, 80);
             this.lblTroco.TabIndex = 0;
             this.lblTroco.Text = "R$ 0,00";
             this.lblTroco.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // label3
+            // lblMostTroco
             // 
-            this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label3.AutoSize = true;
-            this.label3.BackColor = System.Drawing.Color.Transparent;
-            this.label3.Font = new System.Drawing.Font("Montserrat", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(23)))), ((int)(((byte)(35)))), ((int)(((byte)(166)))));
-            this.label3.Location = new System.Drawing.Point(445, 10);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(94, 38);
-            this.label3.TabIndex = 4;
-            this.label3.Text = "Troco:";
+            this.lblMostTroco.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblMostTroco.AutoSize = true;
+            this.lblMostTroco.BackColor = System.Drawing.Color.Transparent;
+            this.lblMostTroco.Font = new System.Drawing.Font("Montserrat", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblMostTroco.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(23)))), ((int)(((byte)(35)))), ((int)(((byte)(166)))));
+            this.lblMostTroco.Location = new System.Drawing.Point(432, 83);
+            this.lblMostTroco.Name = "lblMostTroco";
+            this.lblMostTroco.Size = new System.Drawing.Size(94, 38);
+            this.lblMostTroco.TabIndex = 4;
+            this.lblMostTroco.Text = "Troco:";
+            this.lblMostTroco.Visible = false;
             // 
-            // label2
+            // lblDinDin
             // 
-            this.label2.AutoSize = true;
-            this.label2.BackColor = System.Drawing.Color.Transparent;
-            this.label2.Font = new System.Drawing.Font("Montserrat", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(23)))), ((int)(((byte)(35)))), ((int)(((byte)(166)))));
-            this.label2.Location = new System.Drawing.Point(9, 98);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(184, 38);
-            this.label2.TabIndex = 3;
-            this.label2.Text = "Dinheiro (R$)";
+            this.lblDinDin.AutoSize = true;
+            this.lblDinDin.BackColor = System.Drawing.Color.Transparent;
+            this.lblDinDin.Font = new System.Drawing.Font("Montserrat", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblDinDin.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(23)))), ((int)(((byte)(35)))), ((int)(((byte)(166)))));
+            this.lblDinDin.Location = new System.Drawing.Point(387, 10);
+            this.lblDinDin.Name = "lblDinDin";
+            this.lblDinDin.Size = new System.Drawing.Size(184, 38);
+            this.lblDinDin.TabIndex = 3;
+            this.lblDinDin.Text = "Dinheiro (R$)";
+            this.lblDinDin.Visible = false;
             // 
             // label1
             // 
@@ -387,10 +408,11 @@ namespace Ecco_Casa_de_Fogoes
             // txtDinheiro
             // 
             this.txtDinheiro.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtDinheiro.Location = new System.Drawing.Point(16, 139);
+            this.txtDinheiro.Location = new System.Drawing.Point(374, 51);
             this.txtDinheiro.Name = "txtDinheiro";
             this.txtDinheiro.Size = new System.Drawing.Size(210, 29);
             this.txtDinheiro.TabIndex = 1;
+            this.txtDinheiro.Visible = false;
             this.txtDinheiro.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtDinheiro_KeyDown);
             // 
             // txtDesconto
@@ -418,18 +440,35 @@ namespace Ecco_Casa_de_Fogoes
             this.txtID.Size = new System.Drawing.Size(210, 29);
             this.txtID.TabIndex = 6;
             // 
-            // lblTotal
+            // label6
             // 
-            this.lblTotal.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
-            this.lblTotal.AutoSize = true;
-            this.lblTotal.Font = new System.Drawing.Font("Montserrat", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTotal.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(23)))), ((int)(((byte)(35)))), ((int)(((byte)(166)))));
-            this.lblTotal.Location = new System.Drawing.Point(139, 30);
-            this.lblTotal.Name = "lblTotal";
-            this.lblTotal.Size = new System.Drawing.Size(186, 38);
-            this.lblTotal.TabIndex = 2;
-            this.lblTotal.Text = "Total: R$ 0,00";
+            this.label6.AutoSize = true;
+            this.label6.BackColor = System.Drawing.Color.Transparent;
+            this.label6.Font = new System.Drawing.Font("Montserrat", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(23)))), ((int)(((byte)(35)))), ((int)(((byte)(166)))));
+            this.label6.Location = new System.Drawing.Point(9, 98);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(265, 38);
+            this.label6.TabIndex = 6;
+            this.label6.Text = "Tipo de pagamento";
+            // 
+            // cbTipoPag
+            // 
+            this.cbTipoPag.BackColor = System.Drawing.Color.White;
+            this.cbTipoPag.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbTipoPag.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F);
+            this.cbTipoPag.FormattingEnabled = true;
+            this.cbTipoPag.Items.AddRange(new object[] {
+            "Escolha o tipo...",
+            "PIX",
+            "Crédito",
+            "Débito",
+            "Dinheiro"});
+            this.cbTipoPag.Location = new System.Drawing.Point(16, 139);
+            this.cbTipoPag.Name = "cbTipoPag";
+            this.cbTipoPag.Size = new System.Drawing.Size(167, 32);
+            this.cbTipoPag.TabIndex = 7;
+            this.cbTipoPag.SelectedIndexChanged += new System.EventHandler(this.ComboBox_SelectedIndexChanged);
             // 
             // frmCaixa
             // 
@@ -477,8 +516,8 @@ namespace Ecco_Casa_de_Fogoes
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.Panel panel5;
         private System.Windows.Forms.Label lblTroco;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label lblMostTroco;
+        private System.Windows.Forms.Label lblDinDin;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox txtDinheiro;
         private System.Windows.Forms.TextBox txtDesconto;
@@ -489,5 +528,7 @@ namespace Ecco_Casa_de_Fogoes
         private System.Windows.Forms.Button btnCancelar;
         private System.Windows.Forms.Button btnAdicionar;
         private System.Windows.Forms.Label lblTotal;
+        private System.Windows.Forms.ComboBox cbTipoPag;
+        private System.Windows.Forms.Label label6;
     }
 }

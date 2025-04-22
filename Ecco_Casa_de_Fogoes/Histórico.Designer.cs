@@ -45,6 +45,7 @@ namespace Ecco_Casa_de_Fogoes
             this.panel2 = new System.Windows.Forms.Panel();
             this.panel3 = new System.Windows.Forms.Panel();
             this.lblTítulo = new System.Windows.Forms.Label();
+            this.lblTotal = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbXis)).BeginInit();
             this.panel4.SuspendLayout();
@@ -184,6 +185,7 @@ namespace Ecco_Casa_de_Fogoes
             this.panel4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panel4.BackColor = System.Drawing.Color.White;
+            this.panel4.Controls.Add(this.lblTotal);
             this.panel4.Controls.Add(this.pbLogo);
             this.panel4.Controls.Add(this.btnCriar);
             this.panel4.Location = new System.Drawing.Point(109, 695);
@@ -298,6 +300,19 @@ namespace Ecco_Casa_de_Fogoes
             this.lblTítulo.TabIndex = 0;
             this.lblTítulo.Text = "Histórico de Vendas";
             // 
+            // lblTotal
+            // 
+            this.lblTotal.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.lblTotal.AutoSize = true;
+            this.lblTotal.Font = new System.Drawing.Font("Montserrat", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTotal.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(23)))), ((int)(((byte)(35)))), ((int)(((byte)(166)))));
+            this.lblTotal.Location = new System.Drawing.Point(150, 28);
+            this.lblTotal.Name = "lblTotal";
+            this.lblTotal.Size = new System.Drawing.Size(186, 38);
+            this.lblTotal.TabIndex = 9;
+            this.lblTotal.Text = "Total: R$ 0,00";
+            // 
             // frmHisto
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -321,6 +336,7 @@ namespace Ecco_Casa_de_Fogoes
             this.panel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pbXis)).EndInit();
             this.panel4.ResumeLayout(false);
+            this.panel4.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbLogo)).EndInit();
             this.panel5.ResumeLayout(false);
             this.panel5.PerformLayout();
@@ -350,5 +366,6 @@ namespace Ecco_Casa_de_Fogoes
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.Label lblTítulo;
+        private System.Windows.Forms.Label lblTotal;
     }
 }

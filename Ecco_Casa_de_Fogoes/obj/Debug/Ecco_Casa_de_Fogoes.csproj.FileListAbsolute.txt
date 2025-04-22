@@ -44,3 +44,7 @@ C:\Users\luiz.esferreira6\source\repos\Ecco\Ecco_Casa_de_Fogoes\bin\Debug\System
 C:\Users\luiz.esferreira6\source\repos\Ecco\Ecco_Casa_de_Fogoes\obj\Debug\Ecco_Casa_de_Fogoes.csproj.CopyComplete
 C:\Users\luiz.esferreira6\source\repos\Ecco\Ecco_Casa_de_Fogoes\obj\Debug\Ecco_Casa_de_Fogoes.frmHisto.resources
 C:\Users\luiz.esferreira6\source\repos\Ecco\Ecco_Casa_de_Fogoes\obj\Debug\Ecco_Casa_de_Fogoes.frmCaixa.resources
+C:\Users\luiz.esferreira6\source\repos\Ecco\Ecco_Casa_de_Fogoes\bin\Debug\Ecco_Casa_de_Fogoes.exe.manifest
+C:\Users\luiz.esferreira6\source\repos\Ecco\Ecco_Casa_de_Fogoes\bin\Debug\Ecco_Casa_de_Fogoes.application
+C:\Users\luiz.esferreira6\source\repos\Ecco\Ecco_Casa_de_Fogoes\obj\Debug\Ecco_Casa_de_Fogoes.exe.manifest
+C:\Users\luiz.esferreira6\source\repos\Ecco\Ecco_Casa_de_Fogoes\obj\Debug\Ecco_Casa_de_Fogoes.application

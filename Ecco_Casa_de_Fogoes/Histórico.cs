@@ -148,6 +148,7 @@ namespace Ecco_Casa_de_Fogoes // Define o namespace do projeto
                     dataGridView1.Columns["quant"].HeaderText = "Quantidade";
                     dataGridView1.Columns["valortotal"].HeaderText = "Valor total";
                     dataGridView1.Columns["valorcomdesconto"].HeaderText = "Valor com desconto";
+                    dataGridView1.Columns["pagtipo"].HeaderText = "Tipo de Pagamento";
                     dataGridView1.Columns["datacompra"].HeaderText = "Data da compra";
 
 
@@ -162,6 +163,8 @@ namespace Ecco_Casa_de_Fogoes // Define o namespace do projeto
                     dataGridView1.Columns["valortotal"].DefaultCellStyle.FormatProvider = new System.Globalization.CultureInfo("pt-BR");
                     dataGridView1.Columns["valorcomdesconto"].DefaultCellStyle.Format = "C2";
                     dataGridView1.Columns["valorcomdesconto"].DefaultCellStyle.FormatProvider = new System.Globalization.CultureInfo("pt-BR");
+
+                    AtualizarTotal();
                 }
                 catch (Exception ex)
                 {
@@ -169,7 +172,6 @@ namespace Ecco_Casa_de_Fogoes // Define o namespace do projeto
                 }
             }
         }
-
 
         // Método para pesquisar pagamentos com base em um termo
         private void PesquisarPagamento(string termo)
@@ -179,9 +181,11 @@ namespace Ecco_Casa_de_Fogoes // Define o namespace do projeto
                 try
                 {
                     conexao.Open();
-                    string query = "SELECT * FROM pagamento WHERE nomeproduto LIKE @termo OR id_produto LIKE @termo OR datacompra LIKE @termo";
+
+                    string query = "SELECT * FROM pagamento WHERE nomeproduto LIKE @termo OR DATE_FORMAT(datacompra, '%d/%m/%Y %H:%i:%s') LIKE @termo";
                     MySqlCommand comando = new MySqlCommand(query, conexao);
                     comando.Parameters.AddWithValue("@termo", "%" + termo + "%");
+                    
 
                     MySqlDataAdapter adaptador = new MySqlDataAdapter(comando);
                     DataTable tabela = new DataTable();
@@ -195,13 +199,31 @@ namespace Ecco_Casa_de_Fogoes // Define o namespace do projeto
                     dataGridView1.Columns["quant"].HeaderText = "Quantidade";
                     dataGridView1.Columns["valortotal"].HeaderText = "Valor total";
                     dataGridView1.Columns["valorcomdesconto"].HeaderText = "Valor com desconto";
+                    dataGridView1.Columns["pagtipo"].HeaderText = "Tipo de Pagamento";
                     dataGridView1.Columns["datacompra"].HeaderText = "Data da compra";
+
+                    AtualizarTotal();
                 }
                 catch (Exception ex)
                 {
                     MessageBox.Show($"Erro ao pesquisar: {ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error); // Mensagem de erro
                 }
             }
+        }
+
+        private void AtualizarTotal()
+        {
+            decimal total = 0;
+
+            foreach (DataGridViewRow row in dataGridView1.Rows)
+            {
+                if (row.Cells["valortotal"].Value != DBNull.Value)
+                {
+                    total += Convert.ToDecimal(row.Cells["valortotal"].Value);
+                }
+            }
+
+            lblTotal.Text = $"Total: {total.ToString("C2", new System.Globalization.CultureInfo("pt-BR"))}";
         }
 
         // Método para arredondar os botões

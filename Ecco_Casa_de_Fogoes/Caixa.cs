@@ -40,6 +40,8 @@ namespace Ecco_Casa_de_Fogoes // Define o namespace do projeto
             ArredondarBotao(btnAdicionar, 45);
             ArredondarBotao(btnCancelar, 45);
             ArredondarBotao(btnFinalizar, 45);
+
+            cbTipoPag.SelectedIndex = 0;
         }
 
         // Evento que ocorre ao carregar o formulário
@@ -123,6 +125,25 @@ namespace Ecco_Casa_de_Fogoes // Define o namespace do projeto
                 pbXis.BackColor = Color.Transparent;
             }
         }
+
+        private void ComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cbTipoPag.SelectedItem.ToString() == "Dinheiro")
+            {
+                panel5.Visible = true;
+                lblDinDin.Visible = true;
+                lblMostTroco.Visible = true;
+                txtDinheiro.Visible = true;
+            }
+            else
+            {
+                panel5.Visible = false;
+                lblDinDin.Visible = false;
+                lblMostTroco.Visible = false;
+                txtDinheiro.Visible = false;
+            }
+        }
+
 
         // Método para adicionar um produto ao carrinho
         private void btnAdicionar_Click(object sender, EventArgs e)
@@ -267,54 +288,63 @@ namespace Ecco_Casa_de_Fogoes // Define o namespace do projeto
                 return;
             }
 
+            // Verifica se o tipo de pagamento foi selecionado
+            if (cbTipoPag.SelectedItem == null || cbTipoPag.SelectedItem.ToString() == "Escolha o tipo...")
+            {
+                MessageBox.Show("Por favor, selecione um tipo de pagamento válido.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            string tipoPagamento = cbTipoPag.SelectedItem.ToString(); // Salva o tipo de pagamento
+
             try
             {
                 DialogResult resultado = MessageBox.Show(
-                "Deseja Finalizar a compra?", // Pergunta de confirmação
-                "Confirmação",
-                MessageBoxButtons.YesNo,
-                MessageBoxIcon.Question
+                    "Deseja Finalizar a compra?",
+                    "Confirmação",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question
                 );
 
                 if (resultado == DialogResult.Yes)
                 {
                     using (MySqlConnection conn = new MySqlConnection(conexaoString))
                     {
-                        conn.Open(); // Abre a conexão com o banco de dados
+                        conn.Open();
 
-                        decimal totalCompra = 0; // Inicializa o total da compra
+                        decimal totalCompra = 0;
 
                         // Calcula o total da compra
                         foreach (DataGridViewRow row in dataGridView1.Rows)
                         {
-                            if (row.IsNewRow) continue; // Ignora a nova linha
+                            if (row.IsNewRow) continue;
 
-                            string valorStr = row.Cells["valorTotal"].Value?.ToString()?.Replace("R$", "").Trim(); // Obtém o valor total
+                            string valorStr = row.Cells["valorTotal"].Value?.ToString()?.Replace("R$", "").Trim();
                             if (decimal.TryParse(valorStr, out decimal valorLinha))
                             {
-                                totalCompra += valorLinha; // Acumula o total
+                                totalCompra += valorLinha;
                             }
                         }
 
-                        // Aplica desconto se houver
+                        // Aplica desconto
                         decimal desconto = 0;
                         decimal valorComDesconto = totalCompra;
                         if (!string.IsNullOrWhiteSpace(txtDesconto.Text) && decimal.TryParse(txtDesconto.Text, out decimal valorDesconto) && valorDesconto > 0)
                         {
-                            desconto = (valorDesconto / 100m) * totalCompra; // Calcula o desconto
-                            valorComDesconto = totalCompra - desconto; // Aplica o desconto
-                            if (valorComDesconto < 0) valorComDesconto = 0; // Garante que o valor não fique negativo
+                            desconto = (valorDesconto / 100m) * totalCompra;
+                            valorComDesconto = totalCompra - desconto;
+                            if (valorComDesconto < 0) valorComDesconto = 0;
                         }
 
                         // Processa cada item do carrinho
                         foreach (DataGridViewRow row in dataGridView1.Rows)
                         {
-                            if (row.IsNewRow) continue; // Ignora a nova linha
+                            if (row.IsNewRow) continue;
 
-                            string nomeProduto = row.Cells["nomeProduto"].Value?.ToString(); // Obtém o nome do produto
-                            string valorTotalStr = row.Cells["valorTotal"].Value?.ToString()?.Replace("R$", "").Trim(); // Obtém o valor total
-                            string valorUnitarioStr = row.Cells["valorUnitario"].Value?.ToString()?.Replace("R$", "").Trim(); // Obtém o valor unitário
-                            int quantidade = Convert.ToInt32(row.Cells["quantidade"].Value); // Obtém a quantidade
+                            string nomeProduto = row.Cells["nomeProduto"].Value?.ToString();
+                            string valorTotalStr = row.Cells["valorTotal"].Value?.ToString()?.Replace("R$", "").Trim();
+                            string valorUnitarioStr = row.Cells["valorUnitario"].Value?.ToString()?.Replace("R$", "").Trim();
+                            int quantidade = Convert.ToInt32(row.Cells["quantidade"].Value);
 
                             if (decimal.TryParse(valorTotalStr, out decimal valorTotal) &&
                                 decimal.TryParse(valorUnitarioStr, out decimal valorUnitario))
@@ -331,79 +361,76 @@ namespace Ecco_Casa_de_Fogoes // Define o namespace do projeto
                                 {
                                     if (reader.Read())
                                     {
-                                        idProduto = reader.GetInt32("idproduto"); // Obtém o ID do produto
-                                        estoqueAtual = reader.GetInt32("quant"); // Obtém a quantidade em estoque
+                                        idProduto = reader.GetInt32("idproduto");
+                                        estoqueAtual = reader.GetInt32("quant");
                                     }
                                     else
                                     {
                                         MessageBox.Show($"Produto '{nomeProduto}' não encontrado.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                        continue; // Continua para o próximo item se o produto não for encontrado
+                                        continue;
                                     }
                                 }
 
-                                // Atualiza o estoque do produto
+                                // Atualiza o estoque
                                 int novoEstoque = estoqueAtual - quantidade;
-                                if (novoEstoque < 0) novoEstoque = 0; // Garante que o estoque não fique negativo
+                                if (novoEstoque < 0) novoEstoque = 0;
 
                                 string atualizarEstoque = "UPDATE produto SET quant = @novaQuant, data_alteracao = CURRENT_DATE WHERE idproduto = @id";
                                 MySqlCommand cmdUpdate = new MySqlCommand(atualizarEstoque, conn);
                                 cmdUpdate.Parameters.AddWithValue("@novaQuant", novoEstoque);
                                 cmdUpdate.Parameters.AddWithValue("@id", idProduto);
-                                cmdUpdate.ExecuteNonQuery(); // Executa a atualização do estoque
+                                cmdUpdate.ExecuteNonQuery();
 
-                                // Insere a venda na tabela de simulação
+                                // Insere na tabela simulacao
                                 string insertSimulacao = "INSERT INTO simulacao (quant, id_produto) VALUES (@quant, @id_produto)";
                                 MySqlCommand cmdSimulacao = new MySqlCommand(insertSimulacao, conn);
                                 cmdSimulacao.Parameters.AddWithValue("@quant", quantidade);
                                 cmdSimulacao.Parameters.AddWithValue("@id_produto", idProduto);
-                                cmdSimulacao.ExecuteNonQuery(); // Executa a inserção na tabela de simulação
+                                cmdSimulacao.ExecuteNonQuery();
 
-                                long idSimulacao = cmdSimulacao.LastInsertedId; // Obtém o ID da simulação inserida
+                                long idSimulacao = cmdSimulacao.LastInsertedId;
 
-                                // Calcula o desconto proporcional
                                 decimal descontoProporcional = 0;
                                 if (totalCompra > 0)
                                 {
-                                    descontoProporcional = (valorTotal / totalCompra) * desconto; // Calcula o desconto proporcional
+                                    descontoProporcional = (valorTotal / totalCompra) * desconto;
                                 }
 
-                                decimal valorFinal = valorTotal - descontoProporcional; // Aplica o desconto ao valor total
-                                if (valorFinal < 0) valorFinal = 0; // Garante que o valor final não fique negativo
+                                decimal valorFinal = valorTotal - descontoProporcional;
+                                if (valorFinal < 0) valorFinal = 0;
 
-                                // Insere o pagamento na tabela de pagamento
+                                // Insere na tabela Pagamento, agora incluindo o tipo de pagamento
                                 string inserirPagamento = @"INSERT INTO Pagamento 
-                            (quant, nomeproduto, valortotal, valorcomdesconto, id_produto, id_simulacao, datacompra) 
-                            VALUES (@quant, @nomeproduto, @valortotal, @valorcomdesconto, @idProduto, @idSimulacao, @datacompra)";
+                            (quant, nomeproduto, valortotal, valorcomdesconto, pagtipo, id_produto, id_simulacao, datacompra) 
+                            VALUES (@quant, @nomeproduto, @valortotal, @valorcomdesconto, @pagtipo, @idProduto, @idSimulacao, @datacompra)";
+
                                 MySqlCommand cmdInsert = new MySqlCommand(inserirPagamento, conn);
                                 cmdInsert.Parameters.AddWithValue("@quant", quantidade);
                                 cmdInsert.Parameters.AddWithValue("@nomeproduto", nomeProduto);
                                 cmdInsert.Parameters.AddWithValue("@valortotal", valorTotal);
                                 cmdInsert.Parameters.AddWithValue("@valorcomdesconto", valorFinal);
+                                cmdInsert.Parameters.AddWithValue("@pagtipo", tipoPagamento); // <<< Aqui é o novo parâmetro
                                 cmdInsert.Parameters.AddWithValue("@idProduto", idProduto);
                                 cmdInsert.Parameters.AddWithValue("@idSimulacao", idSimulacao);
-                                cmdInsert.Parameters.AddWithValue("@datacompra", DateTime.Now); // Adiciona data e hora atual
-                                cmdInsert.ExecuteNonQuery(); // Executa a inserção na tabela de pagamento
+                                cmdInsert.Parameters.AddWithValue("@datacompra", DateTime.Now);
+                                cmdInsert.ExecuteNonQuery();
                             }
                         }
                     }
 
-                    MessageBox.Show("Venda finalizada com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information); // Mensagem de sucesso
+                    MessageBox.Show("Venda finalizada com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                    // Limpa os dados após a finalização da venda
+                    // Limpa os dados após a venda
                     dataGridView1.Rows.Clear();
                     lblTotal.Text = "Total: R$0,00";
                     txtDesconto.Text = "";
                     txtDinheiro.Text = "";
                     lblTroco.Text = "Troco: R$0,00";
                 }
-                else
-                {
-                    return;
-                }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erro ao finalizar a venda: {ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error); // Mensagem de erro
+                MessageBox.Show($"Erro ao finalizar a venda: {ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
