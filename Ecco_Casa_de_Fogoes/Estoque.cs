@@ -162,6 +162,13 @@ namespace Ecco_Casa_de_Fogoes
                 {
                     MessageBox.Show("Erro ao carregar dados: " + ex.Message);
                 }
+                finally
+                {
+                    if (conexao != null && conexao.State == ConnectionState.Open)
+                    {
+                        conexao.Close();
+                    }
+                }
             }
         }
 
@@ -285,6 +292,13 @@ namespace Ecco_Casa_de_Fogoes
                 catch (Exception ex)
                 {
                     MessageBox.Show("Erro ao pesquisar: " + ex.Message);
+                }
+                finally
+                {
+                    if (conexao != null && conexao.State == ConnectionState.Open)
+                    {
+                        conexao.Close();
+                    }
                 }
             }
         }

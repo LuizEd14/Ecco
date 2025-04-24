@@ -54,14 +54,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Ecco_Casa_de_Fogoes.exe" size="211960">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Ecco_Casa_de_Fogoes.exe" size="214008">
       <assemblyIdentity name="Ecco_Casa_de_Fogoes" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>dxWrMkOKzmqnFAnArB9CuqvluEQR3VxxbPYDlao0OVM=</dsig:DigestValue>
+        <dsig:DigestValue>226s1rNL3LqU7cJHlenowxbPz953zzkHz2N146GMobA=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

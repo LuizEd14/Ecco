@@ -414,6 +414,11 @@ namespace Ecco_Casa_de_Fogoes // Define o namespace do projeto
                                 cmdInsert.Parameters.AddWithValue("@idSimulacao", idSimulacao);
                                 cmdInsert.Parameters.AddWithValue("@datacompra", DateTime.Now);
                                 cmdInsert.ExecuteNonQuery();
+
+                                if (conn != null && conn.State == ConnectionState.Open)
+                                {
+                                    conn.Close();
+                                }
                             }
                         }
                     }

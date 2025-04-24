@@ -37,6 +37,7 @@ namespace Ecco_Casa_de_Fogoes
             this.btnCadastrarP = new System.Windows.Forms.Button();
             this.txtPesquisar = new System.Windows.Forms.TextBox();
             this.panel4 = new System.Windows.Forms.Panel();
+            this.lblTotal = new System.Windows.Forms.Label();
             this.pbLogo = new System.Windows.Forms.PictureBox();
             this.btnCriar = new System.Windows.Forms.Button();
             this.btnPesquisar = new System.Windows.Forms.Button();
@@ -45,7 +46,7 @@ namespace Ecco_Casa_de_Fogoes
             this.panel2 = new System.Windows.Forms.Panel();
             this.panel3 = new System.Windows.Forms.Panel();
             this.lblTítulo = new System.Windows.Forms.Label();
-            this.lblTotal = new System.Windows.Forms.Label();
+            this.btnExcluirMes = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbXis)).BeginInit();
             this.panel4.SuspendLayout();
@@ -185,6 +186,7 @@ namespace Ecco_Casa_de_Fogoes
             this.panel4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panel4.BackColor = System.Drawing.Color.White;
+            this.panel4.Controls.Add(this.btnExcluirMes);
             this.panel4.Controls.Add(this.lblTotal);
             this.panel4.Controls.Add(this.pbLogo);
             this.panel4.Controls.Add(this.btnCriar);
@@ -192,6 +194,19 @@ namespace Ecco_Casa_de_Fogoes
             this.panel4.Name = "panel4";
             this.panel4.Size = new System.Drawing.Size(1200, 87);
             this.panel4.TabIndex = 3;
+            // 
+            // lblTotal
+            // 
+            this.lblTotal.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.lblTotal.AutoSize = true;
+            this.lblTotal.Font = new System.Drawing.Font("Montserrat", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTotal.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(23)))), ((int)(((byte)(35)))), ((int)(((byte)(166)))));
+            this.lblTotal.Location = new System.Drawing.Point(150, 28);
+            this.lblTotal.Name = "lblTotal";
+            this.lblTotal.Size = new System.Drawing.Size(186, 38);
+            this.lblTotal.TabIndex = 9;
+            this.lblTotal.Text = "Total: R$ 0,00";
             // 
             // pbLogo
             // 
@@ -300,18 +315,21 @@ namespace Ecco_Casa_de_Fogoes
             this.lblTítulo.TabIndex = 0;
             this.lblTítulo.Text = "Histórico de Vendas";
             // 
-            // lblTotal
+            // btnExcluirMes
             // 
-            this.lblTotal.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
-            this.lblTotal.AutoSize = true;
-            this.lblTotal.Font = new System.Drawing.Font("Montserrat", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTotal.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(23)))), ((int)(((byte)(35)))), ((int)(((byte)(166)))));
-            this.lblTotal.Location = new System.Drawing.Point(150, 28);
-            this.lblTotal.Name = "lblTotal";
-            this.lblTotal.Size = new System.Drawing.Size(186, 38);
-            this.lblTotal.TabIndex = 9;
-            this.lblTotal.Text = "Total: R$ 0,00";
+            this.btnExcluirMes.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnExcluirMes.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(13)))), ((int)(((byte)(42)))));
+            this.btnExcluirMes.FlatAppearance.BorderSize = 0;
+            this.btnExcluirMes.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnExcluirMes.Font = new System.Drawing.Font("Montserrat", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnExcluirMes.ForeColor = System.Drawing.Color.White;
+            this.btnExcluirMes.Location = new System.Drawing.Point(833, 25);
+            this.btnExcluirMes.Name = "btnExcluirMes";
+            this.btnExcluirMes.Size = new System.Drawing.Size(322, 44);
+            this.btnExcluirMes.TabIndex = 12;
+            this.btnExcluirMes.Text = "Excluir mês passado";
+            this.btnExcluirMes.UseVisualStyleBackColor = false;
+            this.btnExcluirMes.Click += new System.EventHandler(this.btnExcluirMes_Click);
             // 
             // frmHisto
             // 
@@ -367,5 +385,6 @@ namespace Ecco_Casa_de_Fogoes
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.Label lblTítulo;
         private System.Windows.Forms.Label lblTotal;
+        private System.Windows.Forms.Button btnExcluirMes;
     }
 }

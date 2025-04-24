@@ -25,6 +25,7 @@ namespace Ecco_Casa_de_Fogoes // Define o namespace do projeto
             // Arredonda os botões e configurações do DataGridView
             ArredondarBotao(panel5, 45);
             ArredondarBotao(btnPesquisar, 40);
+            ArredondarBotao(btnExcluirMes, 40);
             dataGridView1.DefaultCellStyle.Font = new Font("Montserrat", 12); // Define a fonte das células
             dataGridView1.ColumnHeadersDefaultCellStyle.Font = new Font("Montserrat", 18, FontStyle.Bold); // Define a fonte dos cabeçalhos
             dataGridView1.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; // Alinha o conteúdo das células ao centro
@@ -124,6 +125,24 @@ namespace Ecco_Casa_de_Fogoes // Define o namespace do projeto
                 CarregarDados(); // Se estiver vazio, carrega todos os dados
             }
         }
+        private void btnExcluirMes_Click(object sender, EventArgs e)
+        {
+            DialogResult ok = MessageBox.Show("Você quer deletar os pagamentos do mes passado?", "Aviso", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+            if (ok == DialogResult.Yes)
+            {
+                ok = MessageBox.Show("Você quer REALMENTE deletar os pagamentos do mes passado?", "Aviso", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+
+                if (ok == DialogResult.Yes)
+                {
+                    ok = MessageBox.Show("Por segurança e pela última vez, você quer deletar os pagamentos do mes passado?", "Aviso", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+
+                    if (ok == DialogResult.Yes)
+                    {
+                        ExcluirPagamentosMesPassado();
+                    }
+                }
+            }
+        }
 
         // Método para carregar dados de pagamento no DataGridView
         private void CarregarDados()
@@ -170,6 +189,44 @@ namespace Ecco_Casa_de_Fogoes // Define o namespace do projeto
                 {
                     MessageBox.Show("Erro ao carregar dados: " + ex.Message);
                 }
+                finally
+                {
+                    if (conexao != null && conexao.State == ConnectionState.Open)
+                    {
+                        conexao.Close();
+                    }
+                }
+            }
+        }
+
+        private void ExcluirPagamentosMesPassado()
+        {
+            using (MySqlConnection conexao = new MySqlConnection(conexaoString))
+            {
+                try
+                {
+                    conexao.Open();
+
+                    // Obtém o primeiro e o último dia do mês passado
+                    DateTime primeiroDiaMesPassado = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddMonths(-1);
+                    DateTime ultimoDiaMesPassado = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddDays(-1);
+
+                    string query = "DELETE FROM pagamento WHERE datacompra >= @inicio AND datacompra <= @fim";
+                    MySqlCommand comando = new MySqlCommand(query, conexao);
+                    comando.Parameters.AddWithValue("@inicio", primeiroDiaMesPassado);
+                    comando.Parameters.AddWithValue("@fim", ultimoDiaMesPassado);
+
+                    int linhasAfetadas = comando.ExecuteNonQuery();
+
+                    MessageBox.Show($"Foram excluídos {linhasAfetadas} pagamentos do mês passado.", "Exclusão Concluída", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                    // Atualiza os dados na tela
+                    CarregarDados();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Erro ao excluir pagamentos: " + ex.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
         }
 
@@ -182,10 +239,10 @@ namespace Ecco_Casa_de_Fogoes // Define o namespace do projeto
                 {
                     conexao.Open();
 
-                    string query = "SELECT * FROM pagamento WHERE nomeproduto LIKE @termo OR DATE_FORMAT(datacompra, '%d/%m/%Y %H:%i:%s') LIKE @termo";
+                    string query = "SELECT * FROM pagamento WHERE nomeproduto LIKE @termo OR DATE_FORMAT(datacompra, '%d/%m/%Y %H:%i:%s') LIKE @termo or pagtipo LIKE @termo";
                     MySqlCommand comando = new MySqlCommand(query, conexao);
                     comando.Parameters.AddWithValue("@termo", "%" + termo + "%");
-                    
+
 
                     MySqlDataAdapter adaptador = new MySqlDataAdapter(comando);
                     DataTable tabela = new DataTable();
@@ -207,6 +264,13 @@ namespace Ecco_Casa_de_Fogoes // Define o namespace do projeto
                 catch (Exception ex)
                 {
                     MessageBox.Show($"Erro ao pesquisar: {ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error); // Mensagem de erro
+                }
+                finally
+                {
+                    if (conexao != null && conexao.State == ConnectionState.Open)
+                    {
+                        conexao.Close();
+                    }
                 }
             }
         }
