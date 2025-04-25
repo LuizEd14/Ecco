@@ -29,6 +29,7 @@ namespace Ecco_Casa_de_Fogoes
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmCaixa));
             this.panel1 = new System.Windows.Forms.Panel();
             this.pbXis = new System.Windows.Forms.PictureBox();
             this.btnHisto = new System.Windows.Forms.Button();
@@ -46,6 +47,8 @@ namespace Ecco_Casa_de_Fogoes
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.panel3 = new System.Windows.Forms.Panel();
+            this.cbTipoPag = new System.Windows.Forms.ComboBox();
+            this.label6 = new System.Windows.Forms.Label();
             this.panel5 = new System.Windows.Forms.Panel();
             this.lblTroco = new System.Windows.Forms.Label();
             this.lblMostTroco = new System.Windows.Forms.Label();
@@ -55,8 +58,6 @@ namespace Ecco_Casa_de_Fogoes
             this.txtDesconto = new System.Windows.Forms.TextBox();
             this.txtQuantidade = new System.Windows.Forms.TextBox();
             this.txtID = new System.Windows.Forms.TextBox();
-            this.label6 = new System.Windows.Forms.Label();
-            this.cbTipoPag = new System.Windows.Forms.ComboBox();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbXis)).BeginInit();
             this.panel4.SuspendLayout();
@@ -343,6 +344,36 @@ namespace Ecco_Casa_de_Fogoes
             this.panel3.Size = new System.Drawing.Size(613, 210);
             this.panel3.TabIndex = 9;
             // 
+            // cbTipoPag
+            // 
+            this.cbTipoPag.BackColor = System.Drawing.Color.White;
+            this.cbTipoPag.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbTipoPag.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F);
+            this.cbTipoPag.FormattingEnabled = true;
+            this.cbTipoPag.Items.AddRange(new object[] {
+            "Escolha o tipo...",
+            "PIX",
+            "Crédito",
+            "Débito",
+            "Dinheiro"});
+            this.cbTipoPag.Location = new System.Drawing.Point(16, 139);
+            this.cbTipoPag.Name = "cbTipoPag";
+            this.cbTipoPag.Size = new System.Drawing.Size(167, 32);
+            this.cbTipoPag.TabIndex = 7;
+            this.cbTipoPag.SelectedIndexChanged += new System.EventHandler(this.ComboBox_SelectedIndexChanged);
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.BackColor = System.Drawing.Color.Transparent;
+            this.label6.Font = new System.Drawing.Font("Montserrat", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(23)))), ((int)(((byte)(35)))), ((int)(((byte)(166)))));
+            this.label6.Location = new System.Drawing.Point(9, 98);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(265, 38);
+            this.label6.TabIndex = 6;
+            this.label6.Text = "Tipo de pagamento";
+            // 
             // panel5
             // 
             this.panel5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -440,36 +471,6 @@ namespace Ecco_Casa_de_Fogoes
             this.txtID.Size = new System.Drawing.Size(210, 29);
             this.txtID.TabIndex = 6;
             // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.BackColor = System.Drawing.Color.Transparent;
-            this.label6.Font = new System.Drawing.Font("Montserrat", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(23)))), ((int)(((byte)(35)))), ((int)(((byte)(166)))));
-            this.label6.Location = new System.Drawing.Point(9, 98);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(265, 38);
-            this.label6.TabIndex = 6;
-            this.label6.Text = "Tipo de pagamento";
-            // 
-            // cbTipoPag
-            // 
-            this.cbTipoPag.BackColor = System.Drawing.Color.White;
-            this.cbTipoPag.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbTipoPag.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F);
-            this.cbTipoPag.FormattingEnabled = true;
-            this.cbTipoPag.Items.AddRange(new object[] {
-            "Escolha o tipo...",
-            "PIX",
-            "Crédito",
-            "Débito",
-            "Dinheiro"});
-            this.cbTipoPag.Location = new System.Drawing.Point(16, 139);
-            this.cbTipoPag.Name = "cbTipoPag";
-            this.cbTipoPag.Size = new System.Drawing.Size(167, 32);
-            this.cbTipoPag.TabIndex = 7;
-            this.cbTipoPag.SelectedIndexChanged += new System.EventHandler(this.ComboBox_SelectedIndexChanged);
-            // 
             // frmCaixa
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -480,7 +481,9 @@ namespace Ecco_Casa_de_Fogoes
             this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.panel4);
             this.Controls.Add(this.panel1);
+            this.ForeColor = System.Drawing.SystemColors.Control;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "frmCaixa";
             this.Text = "Caixa";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;

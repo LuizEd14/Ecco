@@ -29,6 +29,7 @@ namespace Ecco_Casa_de_Fogoes
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmHisto));
             this.panel1 = new System.Windows.Forms.Panel();
             this.pbXis = new System.Windows.Forms.PictureBox();
             this.btnHisto = new System.Windows.Forms.Button();
@@ -37,6 +38,7 @@ namespace Ecco_Casa_de_Fogoes
             this.btnCadastrarP = new System.Windows.Forms.Button();
             this.txtPesquisar = new System.Windows.Forms.TextBox();
             this.panel4 = new System.Windows.Forms.Panel();
+            this.btnExcluirMes = new System.Windows.Forms.Button();
             this.lblTotal = new System.Windows.Forms.Label();
             this.pbLogo = new System.Windows.Forms.PictureBox();
             this.btnCriar = new System.Windows.Forms.Button();
@@ -46,7 +48,6 @@ namespace Ecco_Casa_de_Fogoes
             this.panel2 = new System.Windows.Forms.Panel();
             this.panel3 = new System.Windows.Forms.Panel();
             this.lblTítulo = new System.Windows.Forms.Label();
-            this.btnExcluirMes = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbXis)).BeginInit();
             this.panel4.SuspendLayout();
@@ -195,6 +196,22 @@ namespace Ecco_Casa_de_Fogoes
             this.panel4.Size = new System.Drawing.Size(1200, 87);
             this.panel4.TabIndex = 3;
             // 
+            // btnExcluirMes
+            // 
+            this.btnExcluirMes.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnExcluirMes.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(13)))), ((int)(((byte)(42)))));
+            this.btnExcluirMes.FlatAppearance.BorderSize = 0;
+            this.btnExcluirMes.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnExcluirMes.Font = new System.Drawing.Font("Montserrat", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnExcluirMes.ForeColor = System.Drawing.Color.White;
+            this.btnExcluirMes.Location = new System.Drawing.Point(833, 25);
+            this.btnExcluirMes.Name = "btnExcluirMes";
+            this.btnExcluirMes.Size = new System.Drawing.Size(322, 44);
+            this.btnExcluirMes.TabIndex = 12;
+            this.btnExcluirMes.Text = "Excluir mês passado";
+            this.btnExcluirMes.UseVisualStyleBackColor = false;
+            this.btnExcluirMes.Click += new System.EventHandler(this.btnExcluirMes_Click);
+            // 
             // lblTotal
             // 
             this.lblTotal.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -315,22 +332,6 @@ namespace Ecco_Casa_de_Fogoes
             this.lblTítulo.TabIndex = 0;
             this.lblTítulo.Text = "Histórico de Vendas";
             // 
-            // btnExcluirMes
-            // 
-            this.btnExcluirMes.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnExcluirMes.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(13)))), ((int)(((byte)(42)))));
-            this.btnExcluirMes.FlatAppearance.BorderSize = 0;
-            this.btnExcluirMes.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnExcluirMes.Font = new System.Drawing.Font("Montserrat", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnExcluirMes.ForeColor = System.Drawing.Color.White;
-            this.btnExcluirMes.Location = new System.Drawing.Point(833, 25);
-            this.btnExcluirMes.Name = "btnExcluirMes";
-            this.btnExcluirMes.Size = new System.Drawing.Size(322, 44);
-            this.btnExcluirMes.TabIndex = 12;
-            this.btnExcluirMes.Text = "Excluir mês passado";
-            this.btnExcluirMes.UseVisualStyleBackColor = false;
-            this.btnExcluirMes.Click += new System.EventHandler(this.btnExcluirMes_Click);
-            // 
             // frmHisto
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -343,6 +344,7 @@ namespace Ecco_Casa_de_Fogoes
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.panel2);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "frmHisto";

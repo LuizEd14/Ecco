@@ -29,6 +29,7 @@ namespace Ecco_Casa_de_Fogoes
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmEstoque));
             this.panel1 = new System.Windows.Forms.Panel();
             this.pbXis = new System.Windows.Forms.PictureBox();
             this.btnHisto = new System.Windows.Forms.Button();
@@ -272,6 +273,7 @@ namespace Ecco_Casa_de_Fogoes
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.panel5);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "frmEstoque";
