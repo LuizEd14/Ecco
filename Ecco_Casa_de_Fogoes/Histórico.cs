@@ -125,16 +125,17 @@ namespace Ecco_Casa_de_Fogoes // Define o namespace do projeto
                 CarregarDados(); // Se estiver vazio, carrega todos os dados
             }
         }
+
         private void btnExcluirMes_Click(object sender, EventArgs e)
         {
-            DialogResult ok = MessageBox.Show("Você quer deletar os pagamentos do mes passado?", "Aviso", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+            DialogResult ok = MessageBox.Show("Você quer deletar os pagamentos do mês passado?", "Aviso", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
             if (ok == DialogResult.Yes)
             {
-                ok = MessageBox.Show("Você quer REALMENTE deletar os pagamentos do mes passado?", "Aviso", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                ok = MessageBox.Show("Você quer REALMENTE deletar os pagamentos do mês passado?", "Aviso", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
 
                 if (ok == DialogResult.Yes)
                 {
-                    ok = MessageBox.Show("Por segurança e pela última vez, você quer deletar os pagamentos do mes passado?", "Aviso", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                    ok = MessageBox.Show("Por segurança e pela última vez, você quer deletar os pagamentos do mês passado?", "Aviso", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
 
                     if (ok == DialogResult.Yes)
                     {
@@ -207,25 +208,45 @@ namespace Ecco_Casa_de_Fogoes // Define o namespace do projeto
                 {
                     conexao.Open();
 
-                    // Obtém o primeiro e o último dia do mês passado
+                    // Calcula o primeiro e o último dia do mês passado
                     DateTime primeiroDiaMesPassado = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddMonths(-1);
                     DateTime ultimoDiaMesPassado = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddDays(-1);
 
-                    string query = "DELETE FROM pagamento WHERE datacompra >= @inicio AND datacompra <= @fim";
-                    MySqlCommand comando = new MySqlCommand(query, conexao);
-                    comando.Parameters.AddWithValue("@inicio", primeiroDiaMesPassado);
-                    comando.Parameters.AddWithValue("@fim", ultimoDiaMesPassado);
+                    // Primeiro, conta quantos pagamentos existem do mês passado ou mais antigos
+                    string queryContar = "SELECT COUNT(*) FROM pagamento WHERE datacompra <= @fim";
+                    MySqlCommand comandoContar = new MySqlCommand(queryContar, conexao);
+                    comandoContar.Parameters.AddWithValue("@fim", ultimoDiaMesPassado);
 
-                    int linhasAfetadas = comando.ExecuteNonQuery();
+                    int totalPagamentos = Convert.ToInt32(comandoContar.ExecuteScalar());
 
-                    MessageBox.Show($"Foram excluídos {linhasAfetadas} pagamentos do mês passado.", "Exclusão Concluída", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    if (totalPagamentos == 0)
+                    {
+                        MessageBox.Show("Não há pagamentos do mês passado, tudo está atualizado.", "Informação", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        return;
+                    }
+
+                    // Se houver registros, deleta
+                    string queryExcluir = "DELETE FROM pagamento WHERE datacompra <= @fim";
+                    MySqlCommand comandoExcluir = new MySqlCommand(queryExcluir, conexao);
+                    comandoExcluir.Parameters.AddWithValue("@fim", ultimoDiaMesPassado);
+
+                    int linhasAfetadas = comandoExcluir.ExecuteNonQuery();
+
+                    MessageBox.Show($"Foram excluídos {linhasAfetadas} pagamentos do mês passado ou anteriores.", "Exclusão Concluída", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                     // Atualiza os dados na tela
                     CarregarDados();
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Erro ao excluir pagamentos: " + ex.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("Erro ao carregar dados: " + ex.Message);
+                }
+                finally
+                {
+                    if (conexao != null && conexao.State == ConnectionState.Open)
+                    {
+                        conexao.Close();
+                    }
                 }
             }
         }
