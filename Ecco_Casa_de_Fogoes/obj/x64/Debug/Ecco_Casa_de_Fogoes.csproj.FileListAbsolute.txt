@@ -47,3 +47,4 @@ C:\Users\luiz.esferreira6\source\repos\Ecco\Ecco_Casa_de_Fogoes\obj\x64\Debug\Ec
 C:\Users\luiz.esferreira6\source\repos\Ecco\Ecco_Casa_de_Fogoes\obj\x64\Debug\Ecco_Casa_de_Fogoes.csproj.CopyComplete
 C:\Users\luiz.esferreira6\source\repos\Ecco\Ecco_Casa_de_Fogoes\obj\x64\Debug\Ecco_Casa_de_Fogoes.exe
 C:\Users\luiz.esferreira6\source\repos\Ecco\Ecco_Casa_de_Fogoes\obj\x64\Debug\Ecco_Casa_de_Fogoes.pdb
+C:\Users\luiz.esferreira6\source\repos\Ecco\Ecco_Casa_de_Fogoes\obj\x64\Debug\Ecco_Casa_de_Fogoes.csproj.AssemblyReference.cache

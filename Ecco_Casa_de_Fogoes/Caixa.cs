@@ -34,6 +34,7 @@ namespace Ecco_Casa_de_Fogoes // Define o namespace do projeto
             dataGridView1.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; // Alinhamento dos cabeçalhos
             dataGridView1.ColumnHeadersDefaultCellStyle.BackColor = ColorTranslator.FromHtml("#FAC100"); // Cor de fundo dos cabeçalhos
             dataGridView1.ColumnHeadersDefaultCellStyle.ForeColor = ColorTranslator.FromHtml("#1723A6"); // Cor do texto dos cabeçalhos
+            dataGridView1.DefaultCellStyle.ForeColor = Color.Black;
             dataGridView1.EnableHeadersVisualStyles = false; // Desabilita estilos visuais padrão
 
             // Arredonda os botões
@@ -153,46 +154,60 @@ namespace Ecco_Casa_de_Fogoes // Define o namespace do projeto
             {
                 using (MySqlConnection conn = new MySqlConnection(conexaoString))
                 {
-                    conn.Open(); // Abre a conexão com o banco de dados
-                    string query = "SELECT produto, valorunidade, quant FROM produto WHERE idproduto = @id"; // Consulta para buscar o produto
-                    MySqlCommand cmd = new MySqlCommand(query, conn);
-                    cmd.Parameters.AddWithValue("@id", idProduto); // Adiciona o parâmetro da consulta
-
-                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    try
                     {
-                        // Verifica se o produto foi encontrado
-                        if (reader.Read())
-                        {
-                            string nomeProduto = reader.GetString("produto"); // Obtém o nome do produto
-                            decimal valorUnitario = reader.GetDecimal("valorunidade"); // Obtém o valor unitário
-                            int estoqueAtual = reader.GetInt32("quant"); // Obtém a quantidade em estoque
+                        conn.Open(); // Abre a conexão com o banco de dados
+                        string query = "SELECT produto, valorunidade, quant FROM produto WHERE idproduto = @id"; // Consulta para buscar o produto
+                        MySqlCommand cmd = new MySqlCommand(query, conn);
+                        cmd.Parameters.AddWithValue("@id", idProduto); // Adiciona o parâmetro da consulta
 
-                            // Verifica se a quantidade solicitada é maior que a disponível
-                            if (quantidade > estoqueAtual)
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            // Verifica se o produto foi encontrado
+                            if (reader.Read())
                             {
-                                MessageBox.Show("Estoque insuficiente! Quantidade disponível: " + estoqueAtual, "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                                txtQuantidade.Clear();
-                                txtQuantidade.Focus();
-                                return;
+                                string nomeProduto = reader.GetString("produto"); // Obtém o nome do produto
+                                decimal valorUnitario = reader.GetDecimal("valorunidade"); // Obtém o valor unitário
+                                int estoqueAtual = reader.GetInt32("quant"); // Obtém a quantidade em estoque
+
+                                // Verifica se a quantidade solicitada é maior que a disponível
+                                if (quantidade > estoqueAtual)
+                                {
+                                    MessageBox.Show("Estoque insuficiente! Quantidade disponível: " + estoqueAtual, "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                    txtQuantidade.Clear();
+                                    txtQuantidade.Focus();
+                                    return;
+                                }
+                                else
+                                {
+                                    decimal valorTotal = valorUnitario * quantidade; // Calcula o valor total
+
+                                    // Adiciona uma nova linha ao DataGridView
+                                    dataGridView1.Rows.Add(
+                                        nomeProduto,
+                                        quantidade,
+                                        valorUnitario.ToString("C"), // Formata o valor unitário como moeda
+                                        valorTotal.ToString("C") // Formata o valor total como moeda
+                                    );
+
+                                    AtualizarTotal(); // Atualiza o total da compra
+                                }
                             }
                             else
                             {
-                                decimal valorTotal = valorUnitario * quantidade; // Calcula o valor total
-
-                                // Adiciona uma nova linha ao DataGridView
-                                dataGridView1.Rows.Add(
-                                    nomeProduto,
-                                    quantidade,
-                                    valorUnitario.ToString("C"), // Formata o valor unitário como moeda
-                                    valorTotal.ToString("C") // Formata o valor total como moeda
-                                );
-
-                                AtualizarTotal(); // Atualiza o total da compra
+                                MessageBox.Show("Produto não encontrado!"); // Mensagem de erro se o produto não for encontrado
                             }
                         }
-                        else
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Erro ao carregar dados: " + ex.Message);
+                    }
+                    finally
+                    {
+                        if (conn != null && conn.State == ConnectionState.Open)
                         {
-                            MessageBox.Show("Produto não encontrado!"); // Mensagem de erro se o produto não for encontrado
+                            conn.Close();
                         }
                     }
                 }
@@ -281,35 +296,36 @@ namespace Ecco_Casa_de_Fogoes // Define o namespace do projeto
         // Método para finalizar a compra
         private void btnFinalizar_Click(object sender, EventArgs e)
         {
-            // Verifica se há itens no carrinho
-            if (dataGridView1.Rows.Count <= 0)
+            using (MySqlConnection conn = new MySqlConnection(conexaoString))
             {
-                MessageBox.Show("Nenhum item no caixa para finalizar.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            // Verifica se o tipo de pagamento foi selecionado
-            if (cbTipoPag.SelectedItem == null || cbTipoPag.SelectedItem.ToString() == "Escolha o tipo...")
-            {
-                MessageBox.Show("Por favor, selecione um tipo de pagamento válido.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            string tipoPagamento = cbTipoPag.SelectedItem.ToString(); // Salva o tipo de pagamento
-
-            try
-            {
-                DialogResult resultado = MessageBox.Show(
-                    "Deseja Finalizar a compra?",
-                    "Confirmação",
-                    MessageBoxButtons.YesNo,
-                    MessageBoxIcon.Question
-                );
-
-                if (resultado == DialogResult.Yes)
+                // Verifica se há itens no carrinho
+                if (dataGridView1.Rows.Count <= 0)
                 {
-                    using (MySqlConnection conn = new MySqlConnection(conexaoString))
+                    MessageBox.Show("Nenhum item no caixa para finalizar.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                // Verifica se o tipo de pagamento foi selecionado
+                if (cbTipoPag.SelectedItem == null || cbTipoPag.SelectedItem.ToString() == "Escolha o tipo...")
+                {
+                    MessageBox.Show("Por favor, selecione um tipo de pagamento válido.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                string tipoPagamento = cbTipoPag.SelectedItem.ToString(); // Salva o tipo de pagamento
+
+                try
+                {
+                    DialogResult resultado = MessageBox.Show(
+                        "Deseja Finalizar a compra?",
+                        "Confirmação",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Question
+                    );
+
+                    if (resultado == DialogResult.Yes)
                     {
+
                         conn.Open();
 
                         decimal totalCompra = 0;
@@ -421,21 +437,23 @@ namespace Ecco_Casa_de_Fogoes // Define o namespace do projeto
                                 }
                             }
                         }
+
+
+                        MessageBox.Show("Venda finalizada com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                        // Limpa os dados após a venda
+                        dataGridView1.Rows.Clear();
+                        lblTotal.Text = "Total: R$0,00";
+                        txtDesconto.Text = "";
+                        txtDinheiro.Text = "";
+                        lblTroco.Text = "Troco: R$0,00";
+
                     }
-
-                    MessageBox.Show("Venda finalizada com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                    // Limpa os dados após a venda
-                    dataGridView1.Rows.Clear();
-                    lblTotal.Text = "Total: R$0,00";
-                    txtDesconto.Text = "";
-                    txtDinheiro.Text = "";
-                    lblTroco.Text = "Troco: R$0,00";
                 }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Erro ao finalizar a venda: {ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Erro ao finalizar a venda: {ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
         }
 

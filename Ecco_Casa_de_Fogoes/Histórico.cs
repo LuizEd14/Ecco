@@ -212,6 +212,7 @@ namespace Ecco_Casa_de_Fogoes // Define o namespace do projeto
                     DateTime primeiroDiaMesPassado = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddMonths(-1);
                     DateTime ultimoDiaMesPassado = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddDays(-1);
 
+
                     // Primeiro, conta quantos pagamentos existem do mês passado ou mais antigos
                     string queryContar = "SELECT COUNT(*) FROM pagamento WHERE datacompra <= @fim";
                     MySqlCommand comandoContar = new MySqlCommand(queryContar, conexao);
@@ -225,6 +226,22 @@ namespace Ecco_Casa_de_Fogoes // Define o namespace do projeto
                         return;
                     }
 
+                    // Busca os id_simulacao relacionados aos pagamentos que serão deletados
+                    List<int> idsSimulacaoParaExcluir = new List<int>();
+                    string querySelecionarIds = "SELECT DISTINCT id_simulacao FROM pagamento WHERE datacompra <= @fim";
+                    using (MySqlCommand cmdSelecionar = new MySqlCommand(querySelecionarIds, conexao))
+                    {
+                        cmdSelecionar.Parameters.AddWithValue("@fim", ultimoDiaMesPassado);
+                        using (MySqlDataReader reader = cmdSelecionar.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                if (!reader.IsDBNull(0))
+                                    idsSimulacaoParaExcluir.Add(reader.GetInt32(0));
+                            }
+                        }
+                    }
+
                     // Se houver registros, deleta
                     string queryExcluir = "DELETE FROM pagamento WHERE datacompra <= @fim";
                     MySqlCommand comandoExcluir = new MySqlCommand(queryExcluir, conexao);
@@ -233,6 +250,17 @@ namespace Ecco_Casa_de_Fogoes // Define o namespace do projeto
                     int linhasAfetadas = comandoExcluir.ExecuteNonQuery();
 
                     MessageBox.Show($"Foram excluídos {linhasAfetadas} pagamentos do mês passado ou anteriores.", "Exclusão Concluída", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                    // Deleta os registros correspondentes da tabela simulacao
+                    foreach (int idSimulacao in idsSimulacaoParaExcluir)
+                    {
+                        string queryExcluirSimulacao = "DELETE FROM simulacao WHERE idsimulacao = @id";
+                        using (MySqlCommand comandoExcluirSimulacao = new MySqlCommand(queryExcluirSimulacao, conexao))
+                        {
+                            comandoExcluirSimulacao.Parameters.AddWithValue("@id", idSimulacao);
+                            comandoExcluirSimulacao.ExecuteNonQuery();
+                        }
+                    }
 
                     // Atualiza os dados na tela
                     CarregarDados();
