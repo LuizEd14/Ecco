@@ -330,9 +330,9 @@ namespace Ecco_Casa_de_Fogoes // Define o namespace do projeto
 
             foreach (DataGridViewRow row in dataGridView1.Rows)
             {
-                if (row.Cells["valortotal"].Value != DBNull.Value)
+                if (row.Cells["valorcomdesconto"].Value != DBNull.Value)
                 {
-                    total += Convert.ToDecimal(row.Cells["valortotal"].Value);
+                    total += Convert.ToDecimal(row.Cells["valorcomdesconto"].Value);
                 }
             }
 
