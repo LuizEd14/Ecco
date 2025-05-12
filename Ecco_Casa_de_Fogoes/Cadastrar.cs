@@ -125,78 +125,74 @@ namespace Ecco_Casa_de_Fogoes
         // Evento de clique do botão "Salvar"
         private void btnSalvar_Click(object sender, EventArgs e)
         {
+            // Resetando cor dos campos para branco
+            txtID.BackColor = Color.White;
+            txtProduto.BackColor = Color.White;
+            txtTipo.BackColor = Color.White;
+            txtQuantidade.BackColor = Color.White;
+            txtValor.BackColor = Color.White;
+
+            // Valida os campos obrigatórios
+            if (!ValidarCampo(txtID, "ID")) return;
+            if (!ValidarCampo(txtProduto, "Produto")) return;
+            if (!ValidarCampo(txtTipo, "Tipo")) return;
+            if (!ValidarCampo(txtQuantidade, "Quantidade")) return;
+            if (!ValidarCampo(txtValor, "Valor")) return;
+
             try
             {
-                // Resetando cor dos campos para branco
-                txtID.BackColor = Color.White;
-                txtProduto.BackColor = Color.White;
-                txtTipo.BackColor = Color.White;
-                txtQuantidade.BackColor = Color.White;
-                txtValor.BackColor = Color.White;
+                // Converte os valores dos campos
+                id = Convert.ToInt32(txtID.Text);
+                produto = txtProduto.Text;
+                tipo = txtTipo.Text;
+                quantidade = Convert.ToInt32(txtQuantidade.Text);
+                valor = float.Parse(txtValor.Text, new CultureInfo("pt-BR"));
 
-                // Valida os campos obrigatórios
-                if (!ValidarCampo(txtID, "ID")) return;
-                if (!ValidarCampo(txtProduto, "Produto")) return;
-                if (!ValidarCampo(txtTipo, "Tipo")) return;
-                if (!ValidarCampo(txtQuantidade, "Quantidade")) return;
-                if (!ValidarCampo(txtValor, "Valor")) return;
-
-                try
-                {
-                    // Converte os valores dos campos
-                    id = Convert.ToInt32(txtID.Text);
-                    produto = txtProduto.Text;
-                    tipo = txtTipo.Text;
-                    quantidade = Convert.ToInt32(txtQuantidade.Text);
-                    valor = float.Parse(txtValor.Text, new CultureInfo("pt-BR"));
-                }
-                catch
-                {
-                    MessageBox.Show("Alguns dos campos estão preenchidos de forma incorreta.", "Atenção", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                    return;
-                }
-
-                // Abre conexão com o banco
+                // Inicializa e abre a conexão com o banco de dados
                 Conexao = new MySqlConnection(data_source);
                 Conexao.Open();
 
-                // Comando SQL com INSERT ou UPDATE, caso o ID já exista
+                // Verifica se o ID já existe
+                MySqlCommand checkCmd = new MySqlCommand("SELECT COUNT(*) FROM produto WHERE idproduto = @id", Conexao);
+                checkCmd.Parameters.AddWithValue("@id", id);
+                int count = Convert.ToInt32(checkCmd.ExecuteScalar());
+
+                if (count > 0)
+                {
+                    MessageBox.Show("Já existe um produto com este ID. Escolha outro ID.", "ID Duplicado", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                // Insere o produto
                 MySqlCommand cmd = new MySqlCommand
                 {
-                    Connection = Conexao
+                    Connection = Conexao,
+                    CommandText = @"INSERT INTO produto (idproduto, produto, tipo, quant, valorunidade) 
+                            VALUES (@id, @produto, @tipo, @quant, @valorunidade)"
                 };
 
-                cmd.CommandText = @"
-                    INSERT INTO produto (idproduto, produto, tipo, quant, valorunidade) 
-                    VALUES (@id, @produto, @tipo, @quant, @valorunidade)
-                    ON DUPLICATE KEY UPDATE 
-                        produto = VALUES(produto), 
-                        tipo = VALUES(tipo), 
-                        quant = VALUES(quant), 
-                        valorunidade = VALUES(valorunidade),
-                        data_alteracao = NOW()";
-
-                // Parâmetros da query
                 cmd.Parameters.AddWithValue("@id", id);
                 cmd.Parameters.AddWithValue("@produto", produto.Trim());
                 cmd.Parameters.AddWithValue("@tipo", tipo.Trim());
                 cmd.Parameters.AddWithValue("@quant", quantidade);
                 cmd.Parameters.AddWithValue("@valorunidade", valor);
 
-                cmd.Prepare(); // Prepara o comando
-                cmd.ExecuteNonQuery(); // Executa no banco
+                cmd.Prepare();
+                cmd.ExecuteNonQuery();
 
-                // Mensagem de sucesso
                 MessageBox.Show("O produto foi salvo com sucesso!", "Salvo", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                // Volta para a tela de estoque
                 frmEstoque estoque = new frmEstoque();
                 estoque.Show();
                 this.Hide();
             }
+            catch (FormatException)
+            {
+                MessageBox.Show("Alguns dos campos estão preenchidos de forma incorreta.", "Atenção", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            }
             catch (MySqlException er)
             {
-                MessageBox.Show("Erro: " + er.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Erro com o banco de dados: " + er.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             catch (Exception ex)
             {
@@ -204,7 +200,6 @@ namespace Ecco_Casa_de_Fogoes
             }
             finally
             {
-                // Fecha a conexão, se estiver aberta
                 if (Conexao != null && Conexao.State == ConnectionState.Open)
                 {
                     Conexao.Close();
